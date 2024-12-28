@@ -1,10 +1,11 @@
-import { deleteDocumentFirebase } from "../../services/data-firebase";
+import { deleteDocumentFirebase, resetServicesArray } from "../../services/data-firebase";
 
 export default function ZonaMatch({ matches, setMatches }) {
   const handleDelete = async (matchId) => {
     try {
       // Eliminar el documento de Firebase
       await deleteDocumentFirebase("match", matchId);
+     await resetServicesArray('madre', matches[0].mother.idFirestore) // elimino la cita en la collection de "madre o acompañado o paciente"
       // Tambien eliminar el servicio que tiene la madre 
       
       
@@ -17,6 +18,7 @@ export default function ZonaMatch({ matches, setMatches }) {
       console.error("Error al eliminar el match:", error);
     }
   };
+//console.log(matches?.mother,'matches');
 
   return (
     <div className="mt-6 bg-gray-200 shadow rounded p-4 w-full max-w-4xl">

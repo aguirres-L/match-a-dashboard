@@ -1,49 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { addDocumentFirebase, getDocumentsFirebase,  updateDocumentServiceState } from "../services/data-firebase";
+import {
+  addDocumentFirebase,
+  getDocumentsFirebase,
+  updateDocumentServiceState,
+} from "../services/data-firebase";
 import Modal from "react-modal";
-import ModalUser from "./modal/ModalUser";
 import ZonaMatch from "./zonaMatch/ZonaMatch";
+import Refresh from "./ui/refresh/Refresh";
+import RefreshMadre from "./ui/refresh/RefreshMadre";
+import NannyModal from "./modal/NannyModal";
 
 Modal.setAppElement("#root");
-
-
-function NannyModal({ isOpen, onClose, nannies }) {
-    return (
-      <Modal
-        isOpen={isOpen}
-        onRequestClose={onClose}
-        className="bg-white p-6 rounded shadow-lg max-w-lg mx-auto mt-20"
-        overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
-      >
-        <h2 className="text-xl font-bold mb-4">Lista de Niñeras</h2>
-        <ul className="space-y-2">
-          {nannies.map((nanny) => (
-            <li
-              key={nanny.idFirestore}
-              className="p-3 bg-blue-100 rounded hover:bg-blue-200"
-            >
-              <p className="font-bold">{nanny.name}</p>
-              <p className="text-sm">{nanny.address}</p>
-              <p className="text-sm">{nanny.neighborhood}</p>
-            </li>
-          ))}
-        </ul>
-        <button
-          className="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-          onClick={onClose}
-        >
-          Cerrar
-        </button>
-      </Modal>
-    );
-  }
-
-
-
-
-
-
-
 function MatchUI() {
   const [matches, setMatches] = useState([]);
   const [nannies, setNannies] = useState([]);
@@ -51,15 +18,16 @@ function MatchUI() {
   const [selectedNanny, setSelectedNanny] = useState(null);
   const [selectedMother, setSelectedMother] = useState(null);
   const [dragging, setDragging] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [notification, setNotification] = useState(null);
 
   const [reloadData, setReloadData] = useState(false);
 
   const [isNannyModalOpen, setIsNannyModalOpen] = useState(false);
 
-
+  const [refesh, setRefesh] = useState(false);
+  const [isSpinning, setIsSpinning] = useState(false);
+  const [isSpinningMadre, setIsSpinningMadre] = useState(false);
 
   useEffect(() => {
     async function getAllUsers() {
@@ -67,30 +35,29 @@ function MatchUI() {
         const madre = await getDocumentsFirebase("madre");
         const nana = await getDocumentsFirebase("nana");
         const matchesFirebase = await getDocumentsFirebase("match");
-    
+
         const mothersWithServices = madre.filter(
           (mother) =>
             mother.services &&
             mother.services.length > 0 &&
             mother.services.some((service) => service.state !== true)
         );
-       /*  const nanniesWithStateTrue = nana.filter((nanny) => nanny.state === true);
-     */
+        /*  const nanniesWithStateTrue = nana.filter((nanny) => nanny.state === true);
+         */
         setMothers(mothersWithServices);
-     /*    setNannies(nanniesWithStateTrue); */
+        /*    setNannies(nanniesWithStateTrue); */
         setNannies(nana);
         setMatches(matchesFirebase);
       } catch (error) {
         console.error("Error fetching documents: ", error);
       }
     }
-  
+
     getAllUsers();
-  }, [reloadData]); // Escucha cambios en `reloadData`
-  
-  
-// Usar esta función para disparar la recarga de datos
-function reload() {
+  }, [reloadData, refesh]); // Escucha cambios en `reloadData`
+
+  // Usar esta función para disparar la recarga de datos
+  function reload() {
     setReloadData((prev) => !prev);
   }
   const showNotification = (message, type) => {
@@ -100,7 +67,10 @@ function reload() {
 
   const handleMatch = async () => {
     if (!selectedNanny || !selectedMother) {
-      showNotification("Debe seleccionar una Niñera y una Madre para crear un Match", "error");
+      showNotification(
+        "Debe seleccionar una Niñera y una Madre para crear un Match",
+        "error"
+      );
       return;
     }
     const matchExists = matches.some(
@@ -112,40 +82,38 @@ function reload() {
       showNotification("Este match ya existe", "error");
       return;
     }
-    
-    
 
-    const newMatch = { // datos a fireabse collection match
+    const newMatch = {
+      // datos a fireabse collection match
       nanny: selectedNanny,
       mother: selectedMother,
- /*      id: Date.now(), */
+      /*      id: Date.now(), */
       idNana: selectedNanny.idFirestore,
     };
-    
-  
-  try {
-    await updateDocumentServiceState("madre", selectedMother.idFirestore, 0, true);
-    await addDocumentFirebase('match', newMatch) // Se almacena los datos en Firebase para "match"
-  } catch (error) {
-    console.log(error)
-  }
-  reload();
-    
+
+    try {
+      await updateDocumentServiceState(
+        "madre",
+        selectedMother.idFirestore,
+        0,
+        true
+      );
+      await addDocumentFirebase("match", newMatch); // Se almacena los datos en Firebase para "match"
+    } catch (error) {
+      console.log(error);
+    }
+    reload();
+
     setMatches([...matches, newMatch]);
     setSelectedNanny(null);
     setSelectedMother(null);
     showNotification("¡Match creado exitosamente!", "success");
   };
 
-/*   const openModal = (item) => {
+  /*   const openModal = (item) => {
     setSelectedItem(item);
     setIsModalOpen(true);
   }; */
-
-  const closeModal = () => {
-    setSelectedItem(null);
-    setIsModalOpen(false);
-  };
 
   const onDragStart = (event, item, type) => {
     setDragging(true);
@@ -174,15 +142,34 @@ function reload() {
     showNotification("Selección eliminada", "info");
   };
 
+  ///  Modal
 
-///  Modal
-
-const toggleNannyModal = () => {
+  const toggleNannyModal = () => {
     setIsNannyModalOpen(!isNannyModalOpen);
   };
 
-///  Modal
+  ///  Modal
 
+  function clickRefresh() {
+    setRefesh(!refesh);
+    // Inicia el giro al hacer clic
+    setIsSpinning(true);
+
+    // Detiene el giro después de 1 segundo (simulando una acción, como un "refresh")
+    setTimeout(() => {
+      setIsSpinning(false);
+    }, 1000);
+  }
+  function clickRefreshMadre() {
+    setRefesh(!refesh);
+    // Inicia el giro al hacer clic
+    setIsSpinningMadre(true);
+
+    // Detiene el giro después de 1 segundo (simulando una acción, como un "refresh")
+    setTimeout(() => {
+      setIsSpinningMadre(false);
+    }, 1000);
+  }
 
   return (
     <div className="flex flex-col items-center bg-gray-100 min-h-screen p-6">
@@ -200,10 +187,9 @@ const toggleNannyModal = () => {
           {notification.message}
         </div>
       )}
-      
-      
-         {/* Botón flotante */}
-         <button
+
+      {/* Botón flotante */}
+      <button
         className="fixed bottom-6 right-6 bg-blue-500 text-white rounded-full p-4 shadow-lg hover:bg-blue-600"
         onClick={toggleNannyModal}
       >
@@ -215,15 +201,29 @@ const toggleNannyModal = () => {
         isOpen={isNannyModalOpen}
         onClose={toggleNannyModal}
         nannies={nannies}
+        reload={reload}
       />
-      
-      
-      
+
       <div className="flex gap-6 w-full max-w-6xl">
-        {/* Niñeras */}
-        <div className="flex-1 bg-white shadow rounded p-4">
-  <h2 className="text-lg font-bold mb-4">Niñeras</h2>
-  <ul className="space-y-2">
+       {/* Niñeras */}
+<div className="flex-1 bg-white shadow rounded p-4">
+  <div className="flex flex-row justify-between items-center mb-4">
+    <h2 className="text-lg font-bold">Niñeras</h2>
+    <button
+      onClick={clickRefresh}
+      className={`p-4 rounded-full transition-all duration-300 ${
+        isSpinning
+          ? "bg-blue-200 hover:bg-blue-300"
+          : "bg-gray-200 hover:bg-gray-300"
+      } focus:outline-none active:scale-95`}
+    >
+      {/* Pasamos isSpinning al componente Refresh */}
+      <Refresh typeUser={1} isSpinning={isSpinning} />
+    </button>
+  </div>
+
+  {/* Lista de Niñeras con Scroll */}
+  <ul className="space-y-2 max-h-[300px] overflow-y-auto pr-2">
     {nannies.map((nanny) => (
       <li
         key={nanny.idFirestore}
@@ -245,16 +245,18 @@ const toggleNannyModal = () => {
               }
         }
       >
-      <div className="flex flex-row justify-between">
-        <p className="font-bold">{nanny.name}</p>
-        <p className={`text-xs font-bold ${nanny.state ? "text-green-500" : "text-red-500"}`}>
-          {nanny.state ? "" : "No Disponible"}
-        {/*   {nanny.state ? "Disponible" : "No Disponible"} */}
-        </p>
-      </div>
+        <div className="flex flex-row justify-between">
+          <p className="font-bold">{nanny.name}</p>
+          <p
+            className={`text-xs font-bold ${
+              nanny.state ? "text-green-500" : "text-red-500"
+            }`}
+          >
+            {nanny.state ? "" : "No Disponible"}
+          </p>
+        </div>
         <p className="text-sm">{nanny.address}</p>
         <p className="text-sm">{nanny.neighborhood}</p>
-       
       </li>
     ))}
   </ul>
@@ -263,8 +265,20 @@ const toggleNannyModal = () => {
 
         {/* Madres */}
         <div className="flex-1 bg-white shadow rounded p-4">
-          <h2 className="text-lg font-bold mb-4">Madres</h2>
-          <ul className="space-y-2">
+          <div className="flex flex-row justify-between mb-4">
+            <h2 className="text-lg font-bold mb-4">Madres</h2>
+            <button
+              onClick={clickRefreshMadre}
+              className={`p-4 rounded-full transition-all duration-300 ${
+                isSpinningMadre
+                  ? "bg-red-200 hover:bg-red-300"
+                  : "bg-gray-200 hover:bg-gray-300"
+              } focus:outline-none active:scale-95`}   >
+              {/* Pasamos `isSpinning` al componente Refresh */}
+              <RefreshMadre typeUser={2} isSpinningMadre={isSpinningMadre} />
+            </button>
+          </div>
+          <ul className="space-y-2 max-h-[300px] overflow-y-auto pr-2">
             {mothers.map((mother) => (
               <li
                 key={mother.idFirestore}
@@ -277,7 +291,6 @@ const toggleNannyModal = () => {
                 <p className="font-bold">{mother.name}</p>
                 <p className="text-sm">{mother.address}</p>
                 <p className="text-sm">{mother.neighborhood}</p>
-                
               </li>
             ))}
           </ul>
@@ -350,15 +363,10 @@ const toggleNannyModal = () => {
         </button>
       </div>
 
-  {/* Zona de Matches */}
-<ZonaMatch matches={matches} setMatches={setMatches} />
+      {/* Zona de Matches */}
+      <ZonaMatch matches={matches} setMatches={setMatches} />
 
-      {/* Modal */}
-      <ModalUser
-        isModalOpen={isModalOpen}
-        closeModal={closeModal}
-        selectedItem={selectedItem}
-      />
+     
     </div>
   );
 }

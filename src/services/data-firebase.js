@@ -174,6 +174,17 @@ export const updateDocumentServiceState = async (collectionName, id, serviceInde
 };
 
 
+export const resetServicesArray = async (collectionName, docId) => {
+  try {
+    const docRef = doc(db, collectionName, docId);
+
+    // Actualizamos el campo "services" para que sea un array vacío
+    await updateDoc(docRef, { services: [] });
+    console.log(`El array "services" del documento ${docId} fue reseteado exitosamente.`);
+  } catch (error) {
+    console.error("Error al restablecer el array 'services':", error);
+  }
+};
 
 
 ///* ------------------------ */

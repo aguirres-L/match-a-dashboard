@@ -147,6 +147,33 @@ export const updateDocumentFirebase = async (collectionName, id, data) => {
 
 
 
+export const updateDocumentServiceState = async (collectionName, id, serviceIndex, newState) => {
+  try {
+    const docRef = doc(db, collectionName, id);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      const services = [...data.services]; // Copiamos el array actual
+
+      // Verificamos si el índice es válido
+      if (services[serviceIndex]) {
+        services[serviceIndex].state = newState; // Actualizamos el estado
+
+        await updateDoc(docRef, { services });
+        console.log("Estado actualizado exitosamente.");
+      } else {
+        console.error("Índice no válido para el campo 'services'.");
+      }
+    } else {
+      console.error("Documento no encontrado.");
+    }
+  } catch (error) {
+    console.error("Error al actualizar el estado del servicio:", error);
+  }
+};
+
+
 
 
 ///* ------------------------ */

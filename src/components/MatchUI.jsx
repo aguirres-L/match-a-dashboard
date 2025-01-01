@@ -176,7 +176,7 @@ function MatchUI() {
       <h1 className="text-2xl font-bold mb-6">Sistema de Match</h1>
       {notification && (
         <div
-          className={`fixed top-4 right-4 p-4 rounded shadow-lg ${
+          className={`fixed z-50 top-4 right-4 p-4 rounded shadow-lg ${
             notification.type === "success"
               ? "bg-green-500 text-white"
               : notification.type === "error"
@@ -188,7 +188,7 @@ function MatchUI() {
         </div>
       )}
 
-{/* ------------ Button Flotante ---------------------- */}
+      {/* ------------ Button Flotante ---------------------- */}
 
       {/* Botón flotante */}
       <button
@@ -205,71 +205,67 @@ function MatchUI() {
         nannies={nannies}
         reload={reload}
       />
-{/* ------------ Button Flotante ---------------------- ---------------------- */}
+      {/* ------------ Button Flotante ---------------------- ---------------------- */}
 
-
-
-
-{/* ------------ Profesionales y Clientes ---------------------- ---------------------- */}
+      {/* ------------ Profesionales y Clientes ---------------------- ---------------------- */}
 
       <div className="flex gap-6 w-full max-w-6xl">
-       {/* Niñeras  ----------------------*/}
-<div className="flex-1 bg-white shadow rounded p-4">
-  <div className="flex flex-row justify-between items-center mb-4">
-    <h2 className="text-lg font-bold">Niñeras</h2>
-    <button
-      onClick={clickRefresh}
-      className={`p-4 rounded-full transition-all duration-300 ${
-        isSpinning
-          ? "bg-blue-200 hover:bg-blue-300"
-          : "bg-gray-200 hover:bg-gray-300"
-      } focus:outline-none active:scale-95`}
-    >
-      {/* Pasamos isSpinning al componente Refresh */}
-      <Refresh typeUser={1} isSpinning={isSpinning} />
-    </button>
-  </div>
+        {/* Niñeras  ----------------------*/}
+        <div className="flex-1 bg-white shadow rounded p-4">
+          <div className="flex flex-row justify-between items-center mb-4">
+            <h2 className="text-lg font-bold">Niñeras</h2>
+            <button
+              onClick={clickRefresh}
+              className={`p-4 rounded-full transition-all duration-300 ${
+                isSpinning
+                  ? "bg-blue-200 hover:bg-blue-300"
+                  : "bg-gray-200 hover:bg-gray-300"
+              } focus:outline-none active:scale-95`}
+            >
+              {/* Pasamos isSpinning al componente Refresh */}
+              <Refresh typeUser={1} isSpinning={isSpinning} />
+            </button>
+          </div>
 
-  {/* Lista de Niñeras con Scroll */}
-  <ul className="space-y-2 max-h-[300px] overflow-y-auto pr-2">
-    {nannies.map((nanny) => (
-      <li
-        key={nanny.idFirestore}
-        className={`p-3 rounded cursor-pointer ${
-          nanny.state === true
-            ? "bg-blue-100 hover:bg-blue-200"
-            : "bg-gray-300 cursor-not-allowed"
-        }`}
-        draggable={nanny.state === true} // Solo hacerlas "draggable" si `state` es true
-        onDragStart={
-          nanny.state === true
-            ? (event) => onDragStart(event, nanny, "nanny")
-            : (event) => {
-                event.preventDefault(); // Evita el arrastre
-                showNotification(
-                  "Esta niñera no está disponible para hacer un match",
-                  "error"
-                );
-              }
-        }
-      >
-        <div className="flex flex-row justify-between">
-          <p className="font-bold">{nanny.name}</p>
-          <p
-            className={`text-xs font-bold ${
-              nanny.state ? "text-green-500" : "text-red-500"
-            }`}
-          >
-            {nanny.state ? "" : "No Disponible"}
-          </p>
+          {/* Lista de Niñeras con Scroll */}
+          <ul className="space-y-2 max-h-[300px] overflow-y-auto pr-2">
+            {nannies.map((nanny) => (
+              <li
+                key={nanny.idFirestore}
+                className={`p-3 rounded cursor-pointer ${
+                  nanny.state === true
+                    ? "bg-blue-100 hover:bg-blue-200"
+                    : "bg-gray-300 cursor-not-allowed"
+                }`}
+                draggable={nanny.state === true} // Solo hacerlas "draggable" si `state` es true
+                onDragStart={
+                  nanny.state === true
+                    ? (event) => onDragStart(event, nanny, "nanny")
+                    : (event) => {
+                        event.preventDefault(); // Evita el arrastre
+                        showNotification(
+                          "Esta niñera no está disponible para hacer un match",
+                          "error"
+                        );
+                      }
+                }
+              >
+                <div className="flex flex-row justify-between">
+                  <p className="font-bold">{nanny.name}</p>
+                  <p
+                    className={`text-xs font-bold ${
+                      nanny.state ? "text-green-500" : "text-red-500"
+                    }`}
+                  >
+                    {nanny.state ? "" : "No Disponible"}
+                  </p>
+                </div>
+                <p className="text-sm">{nanny.address}</p>
+                <p className="text-sm">{nanny.neighborhood}</p>
+              </li>
+            ))}
+          </ul>
         </div>
-        <p className="text-sm">{nanny.address}</p>
-        <p className="text-sm">{nanny.neighborhood}</p>
-      </li>
-    ))}
-  </ul>
-</div>
-
 
         {/* Madres  --------------------- ---------------------- -----------------------*/}
         <div className="flex-1 bg-white shadow rounded p-4">
@@ -281,52 +277,54 @@ function MatchUI() {
                 isSpinningMadre
                   ? "bg-red-200 hover:bg-red-300"
                   : "bg-gray-200 hover:bg-gray-300"
-              } focus:outline-none active:scale-95`}   >
+              } focus:outline-none active:scale-95`}
+            >
               {/* Pasamos `isSpinning` al componente Refresh */}
-              <RefreshMadre typeUser={2} isSpinningMadre={isSpinningMadre}/>
+              <RefreshMadre typeUser={2} isSpinningMadre={isSpinningMadre} />
             </button>
           </div>
           <ul className="space-y-4 max-h-[300px] overflow-y-auto pr-2">
-  {mothers.map((mother) => (
-    <li
-      key={mother.idFirestore}
-      className={`p-4 rounded-lg shadow-md transition transform ${
-        dragging ? "bg-pink-200" : "bg-pink-100"
-      } hover:bg-pink-200 hover:scale-10`}
-      draggable
-      onDragStart={(event) => onDragStart(event, mother, "mother")}
-    >
-      <p className="font-semibold text-lg text-gray-800">{mother.name}</p>
-      <p className="text-sm text-gray-600">{mother.address}</p>
-      <p className="text-sm text-gray-600">{mother.neighborhood}</p>
-      <p className="text-sm text-gray-600">
-        <span className="font-medium">Horario:</span> {mother.schedule}
-      </p>
-      <p className="text-sm text-gray-600">
-        <span className="font-medium">Plan:</span> {mother.services[0]?.plan}
-      </p>
-      <p className="text-sm text-gray-600">
-        <span className="font-medium">Días:</span>{" "}
-        {mother.services[0]?.days?.join(" ") || "No especificado"}
-      </p>
-    </li>
-  ))}
-</ul>
+            {mothers.map((mother) => (
+              <li
+  key={mother.idFirestore}
+  className={`p-4 rounded-lg shadow-md transition transform ${
+    dragging ? "bg-pink-200" : "bg-pink-100"
+  } hover:bg-pink-200 hover:scale-105`}
+  draggable
+  onDragStart={(event) => onDragStart(event, mother, "mother")}
+>
+<p className="font-semibold text-lg text-gray-800 truncate">
+    {mother.name}
+  </p>
+  <p className="text-sm text-gray-600 break-words">{mother.address}</p> 
+  <p className="text-sm text-gray-600 truncate">{mother.neighborhood}</p>
+  <p className="text-sm text-gray-600">
+    <span className="font-medium ">Horario:</span> {mother.services[0]?.schedule || "No especificado"}
+    {console.log(mother.services[0]?.schedule,'tipo ')}
+  </p>
+  <p className="text-sm text-gray-600">
+    <span className="font-medium">Plan:</span>{" "}
+    {mother.services[0]?.plan || "No especificado"}
+  </p>
+  <p className="text-sm text-gray-600">
+    <span className="font-medium">Días:</span>{" "}
+    {mother.services[0]?.days?.join(" ") || "No especificado"}
+  </p>
+</li>
 
+            ))}
+          </ul>
         </div>
       </div>
 
-{/* ------------ Profesionales y Clientes ---------------------- ---------------------- */}
+      {/* ------------ Profesionales y Clientes ---------------------- ---------------------- */}
 
-
-
-{/* ------------ Zona de Matchs ----------------------  -------------------------------*/}
+      {/* ------------ Zona de Matchs ----------------------  -------------------------------*/}
 
       {/* Zona de Creación de Matches  --------------------- -----------------------*/}
       <div className="flex flex-col items-center mt-6 bg-gray-200 shadow rounded p-4 w-full max-w-4xl">
         <h2 className="text-lg font-bold mb-4"> Match</h2>
-        <div  className="flex gap-4 flex-col md:flex-row">
-        
+        <div className="flex gap-4 flex-col md:flex-row">
           {/* Zona de Niñeras */}
           <div
             className={` hidden md:block   flex-1 p-4 bg-white rounded shadow ${
@@ -341,7 +339,6 @@ function MatchUI() {
                 <div>
                   <p className="font-bold">{selectedNanny.name}</p>
                   <p className="text-sm">{selectedNanny.address}</p>
-                  
                 </div>
                 <button
                   className="text-red-500 font-bold"
@@ -354,29 +351,31 @@ function MatchUI() {
               <p className="text-gray-500 italic">Arrastra una niñera aquí</p>
             )}
           </div>
-          
-      {/* Zona de Creación de Matches  --------------------- -----------------------*/}
-          {/* Mobile */}
-          <div className="block md:hidden" >
-        <h3>Seleccionar Niñera</h3>
-        <select
-          className="p-2 border rounded"
-          onChange={(e) => setSelectedNanny(nannies.find((n) => n.idFirestore === e.target.value))}
-        >
-          <option value="">Selecciona una niñera</option>
-          {nannies.map((nanny) => (
-            <option key={nanny.idFirestore} value={nanny.idFirestore}>
-              {nanny.name}
-            </option>
-          ))}
-        </select>
-      </div>
-          
-          
-      {/*  ---------------------- ---------------- ---------------------- ----------------------*/}
-          
 
-          {/* Zona de Madres */}
+          {/* Zona de Creación de Matches  --------------------- -----------------------*/}
+          {/* Mobile */}
+          <div className="block md:hidden">
+            <h3>Seleccionar Niñera</h3>
+            <select
+              className="p-3 border border-gray-300 rounded-lg shadow-sm bg-white hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-300 text-gray-700"
+              onChange={(e) =>
+                setSelectedNanny(
+                  nannies.find((n) => n.idFirestore === e.target.value)
+                )
+              }
+            >
+              <option value="" className="text-gray-400">
+                Selecciona una niñera
+              </option>
+              {nannies.map((nanny) => (
+                <option key={nanny.idFirestore} value={nanny.idFirestore}>
+                  {nanny.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/*  ---------------------- ---------------- ---------------------- ----------------------*/}
           <div
             className={`hidden md:block   flex-1 p-4 bg-white rounded shadow ${
               dragging && "border-2 border-pink-400"
@@ -390,8 +389,10 @@ function MatchUI() {
                 <div>
                   <p className="font-bold">{selectedMother.name}</p>
                   <p className="text-sm">{selectedMother.address}</p>
-                  <p className="text-sm">Plan - {selectedMother.services[0]?.plan}</p>
-                  {console.log(selectedMother,'selector')}
+                  <p className="text-sm">
+                    Plan - {selectedMother.services[0]?.plan}
+                  </p>
+                  {console.log(selectedMother, "selector")}
                 </div>
                 <button
                   className="text-red-500 font-bold"
@@ -404,27 +405,30 @@ function MatchUI() {
               <p className="text-gray-500 italic">Arrastra una madre aquí</p>
             )}
           </div>
-          
-      {/* Zona de Madres  ---------------------- ---------------------- ----------------------*/}
-          
+          {/* ---------------------- ---------------------- ----------------------*/}
+
           {/* Mobile */}
-          <div className="block md:hidden" >
-        <h3>Seleccionar Madre</h3>
-        <select
-          className="p-2 border rounded"
-          onChange={(e) => setSelectedMother(mothers.find((m) => m.idFirestore === e.target.value))}
-        >
-          <option value="">Selecciona una madre</option>
-          {mothers.map((mother) => (
-            <option key={mother.idFirestore} value={mother.idFirestore}>
-              {mother.name}
-            </option>
-          ))}
-        </select>
-      </div>
-      {/*  ---------------------- ---------------- ---------------------- ----------------------*/}
-          
-          
+          <div className="block md:hidden">
+            <h3>Seleccionar Madre</h3>
+            <select
+              className="p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-700"
+              onChange={(e) =>
+                setSelectedMother(
+                  mothers.find((m) => m.idFirestore === e.target.value)
+                )
+              }
+            >
+              <option value="" className="text-gray-400">
+                Selecciona una madre
+              </option>
+              {mothers.map((mother) => (
+                <option key={mother.idFirestore} value={mother.idFirestore}>
+                  {mother.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          {/*  ---------------------- ---------------- ---------------------- ----------------------*/}
         </div>
         <button
           className="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
@@ -436,8 +440,7 @@ function MatchUI() {
 
       {/* Zona de Matches  ---------------------- ---------------------- ----------------------*/}
       <ZonaMatch matches={matches} setMatches={setMatches} />
-{/* ------------ Zona de Matchs ---------------------- */}
-
+      {/* ------------ Zona de Matchs ---------------------- */}
     </div>
   );
 }

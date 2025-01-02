@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { deleteDocumentFirebase, resetServicesArray } from "../../services/data-firebase";
+import SvgWpp from "../svg/SvgWpp";
 
 export default function ZonaMatch({ matches, setMatches }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -25,7 +26,7 @@ export default function ZonaMatch({ matches, setMatches }) {
       setMatches((prevMatches) =>
         prevMatches.filter((match) => match.idFirestore !== selectedMatchId)
       );
-      console.log(`Match con ID ${selectedMatchId} eliminado exitosamente.`);
+   /*    console.log(`Match con ID ${selectedMatchId} eliminado exitosamente.`); */
       closeModal();
     } catch (error) {
       console.error("Error al eliminar el match:", error);
@@ -79,8 +80,18 @@ export default function ZonaMatch({ matches, setMatches }) {
     </div>
   );
 }
+
+
+const generateWhatsAppLink = (name, phone) => {
+  const message = `Hola ${name}, me gustaría ponerme en contacto contigo.`;
+  const encodedMessage = encodeURIComponent(message);
+  return `https://wa.me/${phone}?text=${encodedMessage}`;
+};
+
+
 function MatchCard({ match, openModal }) {
   const [isExpanded, setIsExpanded] = useState(false);
+/* console.log(match,'match'); */
 
   return (
     <li className="bg-white border border-gray-300 shadow-lg rounded-lg overflow-hidden">
@@ -91,7 +102,7 @@ function MatchCard({ match, openModal }) {
         } transition-all duration-300`}
       >
         <div>
-          <h4 className="text-lg font-bold text-white">
+        <h4 className="text-lg font-bold text-white">
             {match.nanny.name} & {match.mother.name}
           </h4>
           <p className="text-sm text-gray-100">
@@ -125,7 +136,18 @@ function MatchCard({ match, openModal }) {
             <ul className="space-y-1 text-sm">
               <li><strong>Nombre:</strong> {match.mother.name}</li>
               <li><strong>Email:</strong> {match.mother.email}</li>
-              <li><strong>Teléfono:</strong> {match.mother.phone}</li>
+              <li className="flex flex-row"  ><strong>Contacto: </strong>  <a
+                  href={generateWhatsAppLink(
+                    match.mother.name,
+                    match.mother.phone
+                  )}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <SvgWpp/>
+                  
+                </a></li>
+              
               <li><strong>Dirección:</strong> {match.mother.address}</li>
               <li><strong>Barrio:</strong> {match.mother.neighborhood}</li>
           {/*     <li><strong>Horario:</strong> {match.mother.schedule}</li> */}
@@ -175,7 +197,16 @@ function MatchCard({ match, openModal }) {
             <ul className="space-y-1 text-sm">
               <li><strong>Nombre:</strong> {match.nanny.name}</li>
               <li><strong>Email:</strong> {match.nanny.email}</li>
-              <li><strong>Teléfono:</strong> {match.nanny.phone}</li>
+              <li className="flex flex-row"  ><strong>Contacto: </strong>  <a
+                  href={generateWhatsAppLink(
+                    match.nanny.name,
+                    match.nanny.phone
+                  )}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <SvgWpp/>
+                </a></li>
               <li><strong>Dirección:</strong> {match.nanny.address}</li>
               <li><strong>Barrio:</strong> {match.nanny.neighborhood}</li>
               <li><strong>Disponibilidad:</strong> {match.nanny.availability}</li>

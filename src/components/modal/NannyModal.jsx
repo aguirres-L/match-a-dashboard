@@ -1,9 +1,19 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
 import { updateDocumentFirebase } from "../../services/data-firebase";
+import SvgWpp from "../svg/SvgWpp";
 
 export default function NannyModal({ isOpen, onClose, nannies, reload }) {
   const [selectedNanny, setSelectedNanny] = useState(null);
+
+
+  const generateWhatsAppLink = (name, phone) => {
+    const message = `Hola ${name}, me gustaría ponerme en contacto contigo.`;
+    const encodedMessage = encodeURIComponent(message);
+    return `https://wa.me/${phone}?text=${encodedMessage}`;
+  };
+  
+
 
   const handleNannyClick = (nanny) => {
     setSelectedNanny(nanny);
@@ -45,11 +55,13 @@ export default function NannyModal({ isOpen, onClose, nannies, reload }) {
             </h2>
             <ul className="space-y-4">
               {nannies.map((nanny) => (
+              
                 <li
                   key={nanny.idFirestore}
                   className="p-4 bg-blue-50 rounded-lg shadow hover:shadow-md cursor-pointer hover:bg-blue-100 transition"
                   onClick={() => handleNannyClick(nanny)}
                 >
+                  {console.log(nanny, 'dato de nani')}
                   <p className="text-lg font-medium text-gray-800">{nanny.name}</p>
                   <p className="text-sm text-gray-600">{nanny.address}</p>
                   <p className="text-sm text-gray-600">{nanny.neighborhood}</p>
@@ -128,6 +140,33 @@ export default function NannyModal({ isOpen, onClose, nannies, reload }) {
                   placeholder="Introduce el barrio"
                 />
               </div>
+              
+              
+                 {/* Contacto */}
+                 <div className="group relative flex items-center space-x-4">
+                <p className="text-sm font-semibold text-gray-700">WhatsApp:</p>
+                <a
+                  href={generateWhatsAppLink(selectedNanny.name, selectedNanny.phone)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-green-500 hover:text-green-700 flex items-center space-x-2"
+                >
+                  <SvgWpp />
+                  <span>Abrir Chat</span>
+                </a>
+              </div>
+  {/* CV */}
+  <div className="group relative  ">
+                <a
+                  href={selectedNanny.cv}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 hover:underline"
+                >
+                  Ver CV
+                </a>
+              </div>
+
 
               {/* Estado */}
               <div className="flex items-center justify-between bg-gray-50 p-4 rounded-lg shadow-sm ring-1 ring-gray-200">

@@ -9,6 +9,7 @@ import ZonaMatch from "./zonaMatch/ZonaMatch";
 import Refresh from "./ui/refresh/Refresh";
 import RefreshMadre from "./ui/refresh/RefreshMadre";
 import NannyModal from "./modal/NannyModal";
+import { useIsWeb } from "../hooks/useIsWeb";
 
 Modal.setAppElement("#root");
 function MatchUI() {
@@ -28,6 +29,11 @@ function MatchUI() {
   const [refesh, setRefesh] = useState(false);
   const [isSpinning, setIsSpinning] = useState(false);
   const [isSpinningMadre, setIsSpinningMadre] = useState(false);
+
+
+// hook isWeb
+let isSeeWeb = useIsWeb();
+/* console.log(isSeeWeb,'isWeb ?'); */
 
   useEffect(() => {
     async function getAllUsers() {
@@ -148,7 +154,7 @@ function MatchUI() {
     setIsNannyModalOpen(!isNannyModalOpen);
   };
 
-  ///  Modal
+  ///  refesh
 
   function clickRefresh() {
     setRefesh(!refesh);
@@ -300,7 +306,7 @@ function MatchUI() {
   <p className="text-sm text-gray-600 truncate">{mother.neighborhood}</p>
   <p className="text-sm text-gray-600">
     <span className="font-medium ">Horario:</span> {mother.services[0]?.schedule || "No especificado"}
-    {console.log(mother.services[0]?.schedule,'tipo ')}
+{/*     {console.log(mother.services[0]?.schedule,'tipo ')} */}
   </p>
   <p className="text-sm text-gray-600">
     <span className="font-medium">Plan:</span>{" "}
@@ -319,117 +325,140 @@ function MatchUI() {
 
       {/* ------------ Profesionales y Clientes ---------------------- ---------------------- */}
 
+
+
+
       {/* ------------ Zona de Matchs ----------------------  -------------------------------*/}
 
       {/* Zona de Creación de Matches  --------------------- -----------------------*/}
       <div className="flex flex-col items-center mt-6 bg-gray-200 shadow rounded p-4 w-full max-w-4xl">
         <h2 className="text-lg font-bold mb-4"> Match</h2>
+        
         <div className="flex gap-4 flex-col md:flex-row">
-          {/* Zona de Niñeras */}
+        
+        {isSeeWeb 
+        ?(
+       /* Zona de Niñeras web */
+        
           <div
-            className={` hidden md:block   flex-1 p-4 bg-white rounded shadow ${
-              dragging && "border-2 border-blue-400"
-            }`}
-            onDragOver={(event) => event.preventDefault()}
-            onDrop={(event) => onDrop(event, "nanny")}
-          >
-            <h3 className="text-md font-bold mb-2">Niñera Seleccionada</h3>
-            {selectedNanny ? (
-              <div className="p-3 bg-blue-100 rounded flex justify-between items-center">
-                <div>
-                  <p className="font-bold">{selectedNanny.name}</p>
-                  <p className="text-sm">{selectedNanny.address}</p>
-                </div>
-                <button
-                  className="text-red-500 font-bold"
-                  onClick={() => clearSelection("nanny")}
-                >
-                  X
-                </button>
+          className={` hidden md:block   flex-1 p-4 bg-white rounded shadow ${
+            dragging && "border-2 border-blue-400"
+          }`}
+          onDragOver={(event) => event.preventDefault()}
+          onDrop={(event) => onDrop(event, "nanny")}
+        >
+          <h3 className="text-md font-bold mb-2">Niñera Seleccionada</h3>
+          {selectedNanny ? (
+            <div className="p-3 bg-blue-100 rounded flex justify-between items-center">
+              <div>
+                <p className="font-bold">{selectedNanny.name}</p>
+                <p className="text-sm">{selectedNanny.address}</p>
               </div>
-            ) : (
-              <p className="text-gray-500 italic">Arrastra una niñera aquí</p>
-            )}
-          </div>
-
-          {/* Zona de Creación de Matches  --------------------- -----------------------*/}
-          {/* Mobile */}
+              <button
+                className="text-red-500 font-bold"
+                onClick={() => clearSelection("nanny")}
+              >
+                X
+              </button>
+            </div>
+          ) : (
+            <p className="text-gray-500 italic">Arrastra una niñera aquí</p>
+          )}
+        </div>
+        )
+        :
+        (
+        /* Mobile */
           <div className="block md:hidden">
-            <h3>Seleccionar Niñera</h3>
-            <select
-              className="p-3 border border-gray-300 rounded-lg shadow-sm bg-white hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-300 text-gray-700"
-              onChange={(e) =>
-                setSelectedNanny(
-                  nannies.find((n) => n.idFirestore === e.target.value)
-                )
-              }
-            >
-              <option value="" className="text-gray-400">
-                Selecciona una niñera
-              </option>
-              {nannies.map((nanny) => (
-                <option key={nanny.idFirestore} value={nanny.idFirestore}>
-                  {nanny.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/*  ---------------------- ---------------- ---------------------- ----------------------*/}
-          <div
-            className={`hidden md:block   flex-1 p-4 bg-white rounded shadow ${
-              dragging && "border-2 border-pink-400"
-            }`}
-            onDragOver={(event) => event.preventDefault()}
-            onDrop={(event) => onDrop(event, "mother")}
+          <h3>Seleccionar Niñera</h3>
+          <select
+            className="p-3 border border-gray-300 rounded-lg shadow-sm bg-white hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-300 text-gray-700"
+            onChange={(e) =>{
+            
+              setSelectedNanny(
+                nannies.find((n) => n.idFirestore === e.target.value)
+              );
+/*               console.log(e.target.value,'ss'); */
+              
+            }
+              
+            }
           >
-            <h3 className="text-md font-bold mb-2">Madre Seleccionada</h3>
-            {selectedMother ? (
-              <div className="p-3 bg-pink-100 rounded flex justify-between items-center">
-                <div>
-                  <p className="font-bold">{selectedMother.name}</p>
-                  <p className="text-sm">{selectedMother.address}</p>
-                  <p className="text-sm">
-                    Plan - {selectedMother.services[0]?.plan}
-                  </p>
-                  {console.log(selectedMother, "selector")}
-                </div>
-                <button
-                  className="text-red-500 font-bold"
-                  onClick={() => clearSelection("mother")}
-                >
-                  X
-                </button>
-              </div>
-            ) : (
-              <p className="text-gray-500 italic">Arrastra una madre aquí</p>
-            )}
-          </div>
-          {/* ---------------------- ---------------------- ----------------------*/}
-
-          {/* Mobile */}
-          <div className="block md:hidden">
-            <h3>Seleccionar Madre</h3>
-            <select
-              className="p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-700"
-              onChange={(e) =>
-                setSelectedMother(
-                  mothers.find((m) => m.idFirestore === e.target.value)
-                )
-              }
-            >
-              <option value="" className="text-gray-400">
-                Selecciona una madre
+            <option value="" className="text-gray-400">
+              Selecciona una niñera
+            </option>
+            {nannies.filter((nanni)=> nanni.state === true).map((nanny) => (
+              <option key={nanny.idFirestore} value={nanny.idFirestore}>
+                {nanny.name}
               </option>
-              {mothers.map((mother) => (
-                <option key={mother.idFirestore} value={mother.idFirestore}>
-                  {mother.name}
-                </option>
-              ))}
-            </select>
+            ))}
+          </select>
+        </div>
+        )
+        }
+      
+      
+      {isSeeWeb 
+      ?(
+      /* Madre  */
+      <div
+        className={`hidden md:block   flex-1 p-4 bg-white rounded shadow ${
+          dragging && "border-2 border-pink-400"
+        }`}
+        onDragOver={(event) => event.preventDefault()}
+        onDrop={(event) => onDrop(event, "mother")}
+      >
+        <h3 className="text-md font-bold mb-2">Madre Seleccionada</h3>
+        {selectedMother ? (
+          <div className="p-3 bg-pink-100 rounded flex justify-between items-center">
+            <div>
+              <p className="font-bold">{selectedMother.name}</p>
+              <p className="text-sm">{selectedMother.address}</p>
+              <p className="text-sm">
+                Plan - {selectedMother.services[0]?.plan}
+              </p>
+           {/*    {console.log(selectedMother, "selector")} */}
+            </div>
+            <button
+              className="text-red-500 font-bold"
+              onClick={() => clearSelection("mother")}
+            >
+              X
+            </button>
           </div>
+        ) : (
+          <p className="text-gray-500 italic">Arrastra una madre aquí</p>
+        )}
+      </div>)
+      
+      :(
+      /* Mobile */
+      <div className="block md:hidden">
+        <h3>Seleccionar Madre</h3>
+        <select
+          className="p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-700"
+          onChange={(e) =>
+            setSelectedMother(
+              mothers.find((m) => m.idFirestore === e.target.value)
+            )
+          }
+        >
+          <option value="" className="text-gray-400">
+            Selecciona una madre
+          </option>
+          {mothers.map((mother) => (
+            <option key={mother.idFirestore} value={mother.idFirestore}>
+              {mother.name}
+            </option>
+          ))}
+        </select>
+      </div>)
+      }
+      
+      
           {/*  ---------------------- ---------------- ---------------------- ----------------------*/}
         </div>
+        
         <button
           className="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
           onClick={handleMatch}
@@ -439,7 +468,10 @@ function MatchUI() {
       </div>
 
       {/* Zona de Matches  ---------------------- ---------------------- ----------------------*/}
+      {matches && 
+      
       <ZonaMatch matches={matches} setMatches={setMatches} />
+      }
       {/* ------------ Zona de Matchs ---------------------- */}
     </div>
   );

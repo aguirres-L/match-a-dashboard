@@ -10,6 +10,7 @@ import Refresh from "./ui/refresh/Refresh";
 import RefreshMadre from "./ui/refresh/RefreshMadre";
 import NannyModal from "./modal/NannyModal";
 import { useIsWeb } from "../hooks/useIsWeb";
+import FaderModal from "./modal/FaderModal";
 
 Modal.setAppElement("#root");
 function MatchUI() {
@@ -24,16 +25,17 @@ function MatchUI() {
 
   const [reloadData, setReloadData] = useState(false);
 
+// state for modals
   const [isNannyModalOpen, setIsNannyModalOpen] = useState(false);
+  const [isFaderModal, setIsFaderModal] = useState(false);
 
   const [refesh, setRefesh] = useState(false);
   const [isSpinning, setIsSpinning] = useState(false);
   const [isSpinningMadre, setIsSpinningMadre] = useState(false);
 
-
-// hook isWeb
-let isSeeWeb = useIsWeb();
-/* console.log(isSeeWeb,'isWeb ?'); */
+  // hook isWeb
+  let isSeeWeb = useIsWeb();
+  /* console.log(isSeeWeb,'isWeb ?'); */
 
   useEffect(() => {
     async function getAllUsers() {
@@ -148,11 +150,25 @@ let isSeeWeb = useIsWeb();
     showNotification("Selección eliminada", "info");
   };
 
-  ///  Modal
+  
+  
+  
+  
+  
+  /// Opne Modal
 
   const toggleNannyModal = () => {
     setIsNannyModalOpen(!isNannyModalOpen);
   };
+  const toogleFaderMOdal=()=>{
+    setIsFaderModal(!isFaderModal)
+  }
+  
+  
+  
+  
+  
+  
 
   ///  refesh
 
@@ -176,10 +192,15 @@ let isSeeWeb = useIsWeb();
       setIsSpinningMadre(false);
     }, 1000);
   }
+  
+  console.log(mothers,'mothers mothers');
+  
 
   return (
-    <div className="flex flex-col items-center bg-gray-100 min-h-screen p-6">
+    <div/*  style={{border:"solid 2px red"}} */ className="flex w-screen flex-col items-center bg-gray-100 min-h-screen p-6">
       <h1 className="text-2xl font-bold mb-6">Sistema de Match</h1>
+      
+      {/* Nitificaciones */}
       {notification && (
         <div
           className={`fixed z-50 top-4 right-4 p-4 rounded shadow-lg ${
@@ -196,9 +217,26 @@ let isSeeWeb = useIsWeb();
 
       {/* ------------ Button Flotante ---------------------- */}
 
+
       {/* Botón flotante */}
       <button
-        className="fixed bottom-6 right-6 bg-blue-500 text-white rounded-full p-4 shadow-lg hover:bg-blue-600"
+        className="fixed z-0 bottom-24 right-2 md:right-4 bg-green-500 text-white rounded-full p-4 shadow-lg hover:bg-green-600"
+        onClick={toogleFaderMOdal}
+      >
+        Padres
+      </button>
+      
+      {/* Modal de padres */}
+      <FaderModal
+        isOpen={isFaderModal}
+        onClose={toogleFaderMOdal}
+        mothers={mothers}
+        reload={reload}
+      />
+      
+      {/* Botón flotante */}
+      <button
+        className="fixed bottom-6 z-0 right-2 md:right-4 z bg-blue-500 text-white rounded-full p-4 shadow-lg hover:bg-blue-600"
         onClick={toggleNannyModal}
       >
         Niñeras
@@ -213,9 +251,65 @@ let isSeeWeb = useIsWeb();
       />
       {/* ------------ Button Flotante ---------------------- ---------------------- */}
 
+
+
+
       {/* ------------ Profesionales y Clientes ---------------------- ---------------------- */}
 
-      <div className="flex gap-6 w-full max-w-6xl">
+      <div className="flex gap-6 w-full sm:flex-row flex-col max-w-6xl">
+      
+          {/* Madres  --------------------- ---------------------- -----------------------*/}
+          <div className="flex-1 bg-white shadow rounded p-4">
+          <div className="flex flex-row justify-between mb-4">
+            <h2 className="text-lg font-bold mb-4">Padres</h2>
+            <button
+              onClick={clickRefreshMadre}
+              className={`p-4 rounded-full transition-all duration-300 ${
+                isSpinningMadre
+                  ? "bg-green-200 hover:bg-green-300"
+                  : "bg-gray-200 hover:bg-gray-300"
+              } focus:outline-none active:scale-95`}
+            >
+              {/* Pasamos `isSpinning` al componente Refresh */}
+              <RefreshMadre typeUser={2} isSpinningMadre={isSpinningMadre} />
+            </button>
+          </div>
+          <ul className="space-y-2 z-0 max-h-[300px] overflow-y-auto">
+            {mothers.map((mother) => (
+              <li
+                key={mother.idFirestore}
+                className={`p-3 rounded-lg  ${
+                  dragging ? "bg-green-200" : "bg-green-100"
+                } hover:bg-green-200 `}
+                draggable
+                onDragStart={(event) => onDragStart(event, mother, "mother")}
+              >
+                <p className="font-semibold text-lg text-gray-800 truncate">
+                  {mother.name}
+                </p>
+                <p className="text-sm text-gray-600 break-words">
+                  {mother.address}
+                </p>
+                <p className="text-sm text-gray-600 truncate">
+                  {mother.neighborhood}
+                </p>
+                <p className="text-sm text-gray-600">
+                  <span className="font-medium ">Horario:</span>{" "}
+                  {mother.services[0]?.schedule || "No especificado"}
+                  {/*     {console.log(mother.services[0]?.schedule,'tipo ')} */}
+                </p>
+                <p className="text-sm text-gray-600">
+                  <span className="font-medium">Plan:</span>{" "}
+                  {mother.services[0]?.plan || "No especificado"}
+                </p>
+                <p className="text-sm text-gray-600">
+                  <span className="font-medium">Días:</span>{" "}
+                  {mother.services[0]?.days?.join(" ") || "No especificado"}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </div>
         {/* Niñeras  ----------------------*/}
         <div className="flex-1 bg-white shadow rounded p-4">
           <div className="flex flex-row justify-between items-center mb-4">
@@ -273,57 +367,12 @@ let isSeeWeb = useIsWeb();
           </ul>
         </div>
 
-        {/* Madres  --------------------- ---------------------- -----------------------*/}
-        <div className="flex-1 bg-white shadow rounded p-4">
-          <div className="flex flex-row justify-between mb-4">
-            <h2 className="text-lg font-bold mb-4">Madres</h2>
-            <button
-              onClick={clickRefreshMadre}
-              className={`p-4 rounded-full transition-all duration-300 ${
-                isSpinningMadre
-                  ? "bg-red-200 hover:bg-red-300"
-                  : "bg-gray-200 hover:bg-gray-300"
-              } focus:outline-none active:scale-95`}
-            >
-              {/* Pasamos `isSpinning` al componente Refresh */}
-              <RefreshMadre typeUser={2} isSpinningMadre={isSpinningMadre} />
-            </button>
-          </div>
-          <ul className="space-y-4 max-h-[300px] overflow-y-auto pr-2">
-            {mothers.map((mother) => (
-              <li
-  key={mother.idFirestore}
-  className={`p-4 rounded-lg shadow-md transition transform ${
-    dragging ? "bg-pink-200" : "bg-pink-100"
-  } hover:bg-pink-200 hover:scale-105`}
-  draggable
-  onDragStart={(event) => onDragStart(event, mother, "mother")}
->
-<p className="font-semibold text-lg text-gray-800 truncate">
-    {mother.name}
-  </p>
-  <p className="text-sm text-gray-600 break-words">{mother.address}</p> 
-  <p className="text-sm text-gray-600 truncate">{mother.neighborhood}</p>
-  <p className="text-sm text-gray-600">
-    <span className="font-medium ">Horario:</span> {mother.services[0]?.schedule || "No especificado"}
-{/*     {console.log(mother.services[0]?.schedule,'tipo ')} */}
-  </p>
-  <p className="text-sm text-gray-600">
-    <span className="font-medium">Plan:</span>{" "}
-    {mother.services[0]?.plan || "No especificado"}
-  </p>
-  <p className="text-sm text-gray-600">
-    <span className="font-medium">Días:</span>{" "}
-    {mother.services[0]?.days?.join(" ") || "No especificado"}
-  </p>
-</li>
-
-            ))}
-          </ul>
-        </div>
+    
       </div>
 
-      {/* ------------ Profesionales y Clientes ---------------------- ---------------------- */}
+{/* ------------ Profesionales y Clientes ---------------------- ---------------------- */}
+
+
 
 
 
@@ -333,132 +382,121 @@ let isSeeWeb = useIsWeb();
       {/* Zona de Creación de Matches  --------------------- -----------------------*/}
       <div className="flex flex-col items-center mt-6 bg-gray-200 shadow rounded p-4 w-full max-w-4xl">
         <h2 className="text-lg font-bold mb-4"> Match</h2>
-        
+
         <div className="flex gap-4 flex-col md:flex-row">
-        
-        {isSeeWeb 
-        ?(
-       /* Zona de Niñeras web */
-        
-          <div
-          className={` hidden md:block   flex-1 p-4 bg-white rounded shadow ${
-            dragging && "border-2 border-blue-400"
-          }`}
-          onDragOver={(event) => event.preventDefault()}
-          onDrop={(event) => onDrop(event, "nanny")}
-        >
-          <h3 className="text-md font-bold mb-2">Niñera Seleccionada</h3>
-          {selectedNanny ? (
-            <div className="p-3 bg-blue-100 rounded flex justify-between items-center">
-              <div>
-                <p className="font-bold">{selectedNanny.name}</p>
-                <p className="text-sm">{selectedNanny.address}</p>
-              </div>
-              <button
-                className="text-red-500 font-bold"
-                onClick={() => clearSelection("nanny")}
-              >
-                X
-              </button>
+          {isSeeWeb ? (
+            /* Zona de Niñeras web */
+
+            <div
+              className={` hidden md:block   flex-1 p-4 bg-white rounded shadow ${
+                dragging && "border-2 border-blue-400"
+              }`}
+              onDragOver={(event) => event.preventDefault()}
+              onDrop={(event) => onDrop(event, "nanny")}
+            >
+              <h3 className="text-md font-bold mb-2">Niñera Seleccionada</h3>
+              {selectedNanny ? (
+                <div className="p-3 bg-blue-100 rounded flex justify-between items-center">
+                  <div>
+                    <p className="font-bold">{selectedNanny.name}</p>
+                    <p className="text-sm">{selectedNanny.address}</p>
+                  </div>
+                  <button
+                    className="text-red-500 font-bold"
+                    onClick={() => clearSelection("nanny")}
+                  >
+                    X
+                  </button>
+                </div>
+              ) : (
+                <p className="text-gray-500 italic">Arrastra una niñera aquí</p>
+              )}
             </div>
           ) : (
-            <p className="text-gray-500 italic">Arrastra una niñera aquí</p>
-          )}
-        </div>
-        )
-        :
-        (
-        /* Mobile */
-          <div className="block md:hidden">
-          <h3>Seleccionar Niñera</h3>
-          <select
-            className="p-3 border border-gray-300 rounded-lg shadow-sm bg-white hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-300 text-gray-700"
-            onChange={(e) =>{
-            
-              setSelectedNanny(
-                nannies.find((n) => n.idFirestore === e.target.value)
-              );
-/*               console.log(e.target.value,'ss'); */
-              
-            }
-              
-            }
-          >
-            <option value="" className="text-gray-400">
-              Selecciona una niñera
-            </option>
-            {nannies.filter((nanni)=> nanni.state === true).map((nanny) => (
-              <option key={nanny.idFirestore} value={nanny.idFirestore}>
-                {nanny.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        )
-        }
-      
-      
-      {isSeeWeb 
-      ?(
-      /* Madre  */
-      <div
-        className={`hidden md:block   flex-1 p-4 bg-white rounded shadow ${
-          dragging && "border-2 border-pink-400"
-        }`}
-        onDragOver={(event) => event.preventDefault()}
-        onDrop={(event) => onDrop(event, "mother")}
-      >
-        <h3 className="text-md font-bold mb-2">Madre Seleccionada</h3>
-        {selectedMother ? (
-          <div className="p-3 bg-pink-100 rounded flex justify-between items-center">
-            <div>
-              <p className="font-bold">{selectedMother.name}</p>
-              <p className="text-sm">{selectedMother.address}</p>
-              <p className="text-sm">
-                Plan - {selectedMother.services[0]?.plan}
-              </p>
-           {/*    {console.log(selectedMother, "selector")} */}
+            /* Mobile */
+            <div className="block md:hidden">
+              <h3>Seleccionar Niñera</h3>
+              <select
+                className="p-3 border border-gray-300 rounded-lg shadow-sm bg-white hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-300 text-gray-700"
+                onChange={(e) => {
+                  setSelectedNanny(
+                    nannies.find((n) => n.idFirestore === e.target.value)
+                  );
+                  /*               console.log(e.target.value,'ss'); */
+                }}
+              >
+                <option value="" className="text-gray-400">
+                  Selecciona una niñera
+                </option>
+                {nannies
+                  .filter((nanni) => nanni.state === true)
+                  .map((nanny) => (
+                    <option key={nanny.idFirestore} value={nanny.idFirestore}>
+                      {nanny.name}
+                    </option>
+                  ))}
+              </select>
             </div>
-            <button
-              className="text-red-500 font-bold"
-              onClick={() => clearSelection("mother")}
+          )}
+
+          {isSeeWeb ? (
+            /* Madre  */
+            <div
+              className={`hidden md:block   flex-1 p-4 bg-white rounded shadow ${
+                dragging && "border-2 border-pink-400"
+              }`}
+              onDragOver={(event) => event.preventDefault()}
+              onDrop={(event) => onDrop(event, "mother")}
             >
-              X
-            </button>
-          </div>
-        ) : (
-          <p className="text-gray-500 italic">Arrastra una madre aquí</p>
-        )}
-      </div>)
-      
-      :(
-      /* Mobile */
-      <div className="block md:hidden">
-        <h3>Seleccionar Madre</h3>
-        <select
-          className="p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-700"
-          onChange={(e) =>
-            setSelectedMother(
-              mothers.find((m) => m.idFirestore === e.target.value)
-            )
-          }
-        >
-          <option value="" className="text-gray-400">
-            Selecciona una madre
-          </option>
-          {mothers.map((mother) => (
-            <option key={mother.idFirestore} value={mother.idFirestore}>
-              {mother.name}
-            </option>
-          ))}
-        </select>
-      </div>)
-      }
-      
-      
+              <h3 className="text-md font-bold mb-2">Madre Seleccionada</h3>
+              {selectedMother ? (
+                <div className="p-3 bg-pink-100 rounded flex justify-between items-center">
+                  <div>
+                    <p className="font-bold">{selectedMother.name}</p>
+                    <p className="text-sm">{selectedMother.address}</p>
+                    <p className="text-sm">
+                      Plan - {selectedMother.services[0]?.plan}
+                    </p>
+                    {/*    {console.log(selectedMother, "selector")} */}
+                  </div>
+                  <button
+                    className="text-red-500 font-bold"
+                    onClick={() => clearSelection("mother")}
+                  >
+                    X
+                  </button>
+                </div>
+              ) : (
+                <p className="text-gray-500 italic">Arrastra una madre aquí</p>
+              )}
+            </div>
+          ) : (
+            /* Mobile */
+            <div className="block md:hidden">
+              <h3>Seleccionar Madre</h3>
+              <select
+                className="p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-700"
+                onChange={(e) =>
+                  setSelectedMother(
+                    mothers.find((m) => m.idFirestore === e.target.value)
+                  )
+                }
+              >
+                <option value="" className="text-gray-400">
+                  Selecciona una madre
+                </option>
+                {mothers.map((mother) => (
+                  <option key={mother.idFirestore} value={mother.idFirestore}>
+                    {mother.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
           {/*  ---------------------- ---------------- ---------------------- ----------------------*/}
         </div>
-        
+
         <button
           className="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
           onClick={handleMatch}
@@ -468,10 +506,7 @@ let isSeeWeb = useIsWeb();
       </div>
 
       {/* Zona de Matches  ---------------------- ---------------------- ----------------------*/}
-      {matches && 
-      
-      <ZonaMatch matches={matches} setMatches={setMatches} />
-      }
+      {matches && <ZonaMatch matches={matches} setMatches={setMatches} />}
       {/* ------------ Zona de Matchs ---------------------- */}
     </div>
   );

@@ -116,6 +116,28 @@ export default function FaderModal({ isOpen, onClose, mothers, reload }) {
               Detalles de Padre
             </h2>
             <div className="space-y-6 bg-white p-6 rounded-xl shadow-lg ring-1 ring-gray-200">
+              
+            <div className="group relative ">
+                <label className="block text-sm font-semibold text-gray-700 mb-1">
+                  Creado
+                </label>
+                <p className="text-sm font-semibold text-gray-700">
+                  {selectedMother?.createdAt
+                    ? convertTimestampToDate(
+                        selectedMother.createdAt.seconds,
+                        selectedMother.createdAt.nanoseconds
+                      ).toLocaleString("es-ES", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit",
+                      })
+                    : "Fecha no disponible"}
+                </p>
+              </div>
+              
               <div className="group relative">
                 <label className="block text-sm font-semibold text-gray-700 mb-1">
                   Nombre
@@ -191,26 +213,6 @@ export default function FaderModal({ isOpen, onClose, mothers, reload }) {
                 </p>
               </div>
 
-              <div className="group relative ">
-                <label className="block text-sm font-semibold text-gray-700 mb-1">
-                  Creado
-                </label>
-                <p className="text-sm font-semibold text-gray-700">
-                  {selectedMother?.createdAt
-                    ? convertTimestampToDate(
-                        selectedMother.createdAt.seconds,
-                        selectedMother.createdAt.nanoseconds
-                      ).toLocaleString("es-ES", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        second: "2-digit",
-                      })
-                    : "Fecha no disponible"}
-                </p>
-              </div>
               <ServiceList services={selectedMother?.services || []} />
 
               <div className="flex items-center justify-between bg-gray-50 p-4 rounded-lg shadow-sm ring-1 ring-gray-200">

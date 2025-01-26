@@ -12,6 +12,9 @@ import NannyModal from "./modal/NannyModal";
 import { useIsWeb } from "../hooks/useIsWeb";
 import FaderModal from "./modal/FaderModal";
 
+// Import img Logo Niñera-Ya
+import logoNiñeraYa from "../assets/logo-niñeras-ya.JPG"
+
 Modal.setAppElement("#root");
 function MatchUI() {
   const [matches, setMatches] = useState([]);
@@ -198,8 +201,17 @@ function MatchUI() {
 
   return (
     <div/*  style={{border:"solid 2px red"}} */ className="flex w-screen flex-col items-center bg-gray-100 min-h-screen p-6">
-      <h1 className="text-2xl font-bold mb-6">Sistema de Match</h1>
-      
+<div className="flex flex-row items-center mb-4 space-x-4">
+  <img 
+    src={logoNiñeraYa} 
+    className="w-20 h-20 rounded-full shadow-lg" 
+    alt="Niñeras-YA" 
+  />
+ <h1 className="text-3xl font-bold">
+    <span className="text-[#e085cf]">Niñeras-YA!</span> <span className="text-gray-800">Manager</span>
+  </h1>
+</div>
+
       {/* Nitificaciones */}
       {notification && (
         <div

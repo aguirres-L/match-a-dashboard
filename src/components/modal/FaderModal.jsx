@@ -3,8 +3,10 @@ import Modal from "react-modal";
 import { updateDocumentFirebase } from "../../services/data-firebase";
 import SvgWpp from "../svg/SvgWpp";
 import ServiceList from "./ServiceList.jsx";
+import ModalDesplazado from "./ModalDesplazado.jsx";
 export default function FaderModal({ isOpen, onClose, mothers, reload }) {
   const [selectedMother, setSelectedMother] = useState(null);
+  const [showModal, setShowModal] = useState(false); // -------------------
 
   // Verifica si los datos de "mothers" llegan correctamente
   /*   useEffect(() => {
@@ -64,10 +66,10 @@ export default function FaderModal({ isOpen, onClose, mothers, reload }) {
       className="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6 overflow-hidden transform transition-transform"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
     >
-      <div className="max-h-[90vh] overflow-y-auto">
+          <div className={`max-h-[100vh]  mb-4 ${!showModal?'overflow-y-auto':''}`}> {/* Controlo el scroll del modal principal */}
         {!selectedMother ? (
           <div>
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-1 mt-4">
               Lista de Padres
             </h2>
             <ul className="space-y-4">
@@ -111,15 +113,24 @@ export default function FaderModal({ isOpen, onClose, mothers, reload }) {
             </div>
           </div>
         ) : (
-          <div>
-            <h2 className="text-2xl font-extrabold text-gray-800 mb-6 tracking-tight">
+          <div
+          className={`transition-transform duration-300 ${
+            showModal ? "-translate-x-1" : ""
+          }`}  >
+            <h2 className="text-2xl font-extrabold text-gray-800 mb-1 mt-4 tracking-tight">
               Detalles de Padre
             </h2>
+   {/* Creado  */}
             <div className="space-y-6 bg-white p-6 rounded-xl shadow-lg ring-1 ring-gray-200">
               
-            <div className="group relative ">
+              
+              
+            <div className="group relative flex flex-row justify-between ">
+              
+              
+              <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">
-                  Creado
+                  Creados
                 </label>
                 <p className="text-sm font-semibold text-gray-700">
                   {selectedMother?.createdAt
@@ -137,6 +148,32 @@ export default function FaderModal({ isOpen, onClose, mothers, reload }) {
                     : "Fecha no disponible"}
                 </p>
               </div>
+              
+              
+              
+              {/* Botón para mostrar modal */}
+              <button
+                onClick={() => setShowModal(true)}
+                className="p-3 bg-[#e085cf] text-white rounded-full shadow-md hover:bg-[#b26aa5] transition"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    fill="none"
+                    stroke="#e9e2e2"
+                    stroke-width="2"
+                    d="m9 6l6 6l-6 6"
+                  />
+                </svg>
+              </button>
+            </div>
+              
+              
+              
               
               <div className="group relative">
                 <label className="block text-sm font-semibold text-gray-700 mb-1">
@@ -235,10 +272,11 @@ export default function FaderModal({ isOpen, onClose, mothers, reload }) {
                   {selectedMother?.sub ? "No Subscripto" : "Subscripto"}
                 </button>
               </div>
+            
             </div>
 
             {console.log(selectedMother, "form in selectedMother")}
-
+    {/* Botones de acción */}
             <div className="mt-8 flex justify-end space-x-4">
               <button
                 onClick={handleSave}
@@ -253,6 +291,19 @@ export default function FaderModal({ isOpen, onClose, mothers, reload }) {
                 Cancelar
               </button>
             </div>
+            
+              {/* Modal desplazado */}    {/* ------------------------------------  implementar los nuevos datos al formulario de niñera */}
+              <div
+                className={`absolute top-0 right-0 w-full sm:w-2/2 h-full bg-[#381c38e0] shadow-xl transform transition-transform duration-300 ${
+                  showModal ? "translate-x-0" : "translate-x-full"
+                }`}
+              >
+               
+            {/*    <ModalDesplazado typeModal={'feedback'} setShowModal={setShowModal} /> */}
+               <ModalDesplazado typeModal={'feedback'} setShowModal={setShowModal} />
+               
+              </div>
+            
           </div>
         )}
       </div>

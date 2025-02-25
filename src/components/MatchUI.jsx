@@ -20,6 +20,7 @@ function MatchUI() {
   const [matches, setMatches] = useState([]);
   const [nannies, setNannies] = useState([]);
   const [mothers, setMothers] = useState([]);
+  const [allFader, setAllFader] = useState(null);
   const [selectedNanny, setSelectedNanny] = useState(null);
   const [selectedMother, setSelectedMother] = useState(null);
   const [dragging, setDragging] = useState(false);
@@ -47,6 +48,7 @@ function MatchUI() {
         const nana = await getDocumentsFirebase("nana");
         const matchesFirebase = await getDocumentsFirebase("match");
 
+        const allFader = madre;
         const mothersWithServices = madre.filter(
           (mother) =>
             mother.services &&
@@ -55,7 +57,8 @@ function MatchUI() {
         );
         /*  const nanniesWithStateTrue = nana.filter((nanny) => nanny.state === true);
          */
-        setMothers(mothersWithServices);
+        setMothers(mothersWithServices); /* solo guardo los valores de los padres que tiene un servicios solicitado */
+        setAllFader(allFader); // --> guardo todos los padres 
         /*    setNannies(nanniesWithStateTrue); */
         setNannies(nana);
         setMatches(matchesFirebase);
@@ -242,7 +245,8 @@ function MatchUI() {
       <FaderModal
         isOpen={isFaderModal}
         onClose={toogleFaderMOdal}
-        mothers={mothers}
+        /* mothers={mothers} */
+        mothers={allFader}
         reload={reload}
       />
       
@@ -269,11 +273,71 @@ function MatchUI() {
       {/* ------------ Profesionales y Clientes ---------------------- ---------------------- */}
 
       <div className="flex gap-6 w-full sm:flex-row flex-col max-w-6xl">
-      
-          {/* Madres  --------------------- ---------------------- -----------------------*/}
+     
+        {/* Niñeras  ----------------------*/}
+        <div className="flex-1 bg-white shadow rounded p-4">
+          <div className="flex flex-row justify-between items-center mb-4">
+            <h2 className="text-lg font-bold">Niñeras</h2>
+            <button
+              onClick={clickRefresh}
+              className={`p-4 rounded-full transition-all duration-300 ${
+                isSpinning
+                  ? "bg-blue-200 hover:bg-blue-300"
+                  : "bg-gray-200 hover:bg-gray-300"
+              } focus:outline-none active:scale-95`}
+            >
+              {/* Pasamos isSpinning al componente Refresh */}
+              <Refresh typeUser={1} isSpinning={isSpinning} />
+            </button>
+          </div>
+
+          {/* Lista de Niñeras con Scroll */}
+          <ul className="space-y-2 max-h-[300px] overflow-y-auto pr-2">
+            {nannies.map((nanny) => (
+              <li
+                key={nanny.idFirestore}
+                className={`p-3 rounded cursor-pointer ${
+                  nanny.state === true
+                    ? "bg-blue-100 hover:bg-blue-200"
+                    : "bg-gray-300 cursor-not-allowed"
+                }`}
+                draggable={nanny.state === true} // Solo hacerlas "draggable" si `state` es true
+                onDragStart={
+                  nanny.state === true
+                    ? (event) => onDragStart(event, nanny, "nanny")
+                    : (event) => {
+                        event.preventDefault(); // Evita el arrastre
+                        showNotification(
+                          "Esta niñera no está disponible para hacer un match",
+                          "error"
+                        );
+                      }
+                }
+              >
+                <div 
+                
+                onClick={()=> console.log(nanny,'nanyy')}
+                className="flex flex-row justify-between">
+                  <p className="font-bold">{nanny.name}</p>
+                  <p
+                    className={`text-xs font-bold ${
+                      nanny.state ? "text-green-500" : "text-red-500"
+                    }`}
+                  >
+                    {nanny.state ? "" : "No Disponible"}
+                  </p>
+                </div>
+                <p className="text-sm">{nanny.address}</p>
+                <p className="text-sm">{nanny.neighborhood}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+ 
+          {/* Nuevo Srevicios  --------------------- ---------------------- -----------------------*/}
           <div className="flex-1 bg-white shadow rounded p-4">
           <div className="flex flex-row justify-between mb-4">
-            <h2 className="text-lg font-bold mb-4">Padres</h2>
+            <h2 className="text-lg font-bold mb-4">Nuevo Servicios</h2>
             <button
               onClick={clickRefreshMadre}
               className={`p-4 rounded-full transition-all duration-300 ${
@@ -322,63 +386,6 @@ function MatchUI() {
             ))}
           </ul>
         </div>
-        {/* Niñeras  ----------------------*/}
-        <div className="flex-1 bg-white shadow rounded p-4">
-          <div className="flex flex-row justify-between items-center mb-4">
-            <h2 className="text-lg font-bold">Niñeras</h2>
-            <button
-              onClick={clickRefresh}
-              className={`p-4 rounded-full transition-all duration-300 ${
-                isSpinning
-                  ? "bg-blue-200 hover:bg-blue-300"
-                  : "bg-gray-200 hover:bg-gray-300"
-              } focus:outline-none active:scale-95`}
-            >
-              {/* Pasamos isSpinning al componente Refresh */}
-              <Refresh typeUser={1} isSpinning={isSpinning} />
-            </button>
-          </div>
-
-          {/* Lista de Niñeras con Scroll */}
-          <ul className="space-y-2 max-h-[300px] overflow-y-auto pr-2">
-            {nannies.map((nanny) => (
-              <li
-                key={nanny.idFirestore}
-                className={`p-3 rounded cursor-pointer ${
-                  nanny.state === true
-                    ? "bg-blue-100 hover:bg-blue-200"
-                    : "bg-gray-300 cursor-not-allowed"
-                }`}
-                draggable={nanny.state === true} // Solo hacerlas "draggable" si `state` es true
-                onDragStart={
-                  nanny.state === true
-                    ? (event) => onDragStart(event, nanny, "nanny")
-                    : (event) => {
-                        event.preventDefault(); // Evita el arrastre
-                        showNotification(
-                          "Esta niñera no está disponible para hacer un match",
-                          "error"
-                        );
-                      }
-                }
-              >
-                <div className="flex flex-row justify-between">
-                  <p className="font-bold">{nanny.name}</p>
-                  <p
-                    className={`text-xs font-bold ${
-                      nanny.state ? "text-green-500" : "text-red-500"
-                    }`}
-                  >
-                    {nanny.state ? "" : "No Disponible"}
-                  </p>
-                </div>
-                <p className="text-sm">{nanny.address}</p>
-                <p className="text-sm">{nanny.neighborhood}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-
     
       </div>
 
@@ -442,14 +449,18 @@ function MatchUI() {
                 </option>
                 {nannies
                   .filter((nanni) => nanni.state === true)
-                  .map((nanny) => (
-                    <option key={nanny.idFirestore} value={nanny.idFirestore}>
+                  .map((nanny) => {
+                  return(
+                    <option
+                    key={nanny.idFirestore} value={nanny.idFirestore}>
                       {nanny.name}
                     </option>
-                  ))}
+                  )
+                  })}
               </select>
             </div>
           )}
+
 
           {isSeeWeb ? (
             /* Madre  */

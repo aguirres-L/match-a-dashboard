@@ -3,6 +3,7 @@ import Modal from "react-modal";
 import { updateDocumentFirebase } from "../../services/data-firebase";
 import SvgWpp from "../svg/SvgWpp";
 import ModalDesplazado from "./ModalDesplazado";
+import NannyDetails from "./NannyDetails";
 
 export default function NannyModal({ isOpen, onClose, nannies, reload }) {
   const [selectedNanny, setSelectedNanny] = useState(null);
@@ -48,7 +49,9 @@ export default function NannyModal({ isOpen, onClose, nannies, reload }) {
     // Creamos un objeto Date con los milisegundos
     return new Date(milliseconds);
   }
-
+/* console.log(selectedNanny,'nana');
+console.log(selectedNanny.idFirestore,'selectedNanny');
+ */
   return (
     <Modal
       isOpen={isOpen}
@@ -56,12 +59,23 @@ export default function NannyModal({ isOpen, onClose, nannies, reload }) {
       className="bg-white rounded-lg shadow-xl z-50 max-w-2xl w-full p-6 overflow-hidden transform transition-transform"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
     >
-      <div className={`max-h-[100vh]  mb-4 ${!showModal?'overflow-y-auto':''}`}> {/* Controlo el scroll del modal principal */}
+      <div className={`max-h-[80vh] mb-6 mt-5 ${!showModal?'overflow-y-auto':''}`}> {/* Controlo el scroll del modal principal */}
         {!selectedNanny ? (
           <div>
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-              Lista de Niñeras
-            </h2>
+     <div className="flex flex-row justify-between items-center p-4 border-b border-gray-200">
+  <h2 className="text-2xl font-semibold text-gray-800">
+    Lista de Niñeras
+  </h2>
+  <button
+    className="px-3 py-1 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+    onClick={onClose}
+  >
+    X
+  </button>
+</div>
+         
+         {/* Listado de niñeras */}
+         
             <ul className="space-y-4">
               {nannies.map((nanny) => (
                 <li
@@ -86,12 +100,7 @@ export default function NannyModal({ isOpen, onClose, nannies, reload }) {
               ))}
             </ul>
             <div className="mt-6 flex justify-end">
-              <button
-                className="px-6 py-2 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition"
-                onClick={onClose}
-              >
-                Cerrar
-              </button>
+           
             </div>
           </div>
         ) : (
@@ -106,15 +115,22 @@ export default function NannyModal({ isOpen, onClose, nannies, reload }) {
     }`}
   >
           
-            <h2 className="text-2xl font-extrabold text-gray-800 mt-4 tracking-tight">
-              Detalles de la Niñera
-            </h2>
+          <div className="flex flex-row justify-between items-center p-4 border-b border-gray-200">
+              <h2 className="text-2xl font-semibold text-gray-800">
+Detalle de Niñera              </h2>
+              <button
+                className="px-3 py-1 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                onClick={handleCloseDetails}
+              >
+                X
+              </button>
+            </div>
             {/* Creado  */}
             <div className="space-y-4 bg-white p-6 rounded-xl shadow-lg ring-1 ring-gray-200">
               <div className="group relative flex flex-row justify-between ">
               
               
-                <div>
+              {/*   <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1">
                     Creado
                   </label>
@@ -133,8 +149,15 @@ export default function NannyModal({ isOpen, onClose, nannies, reload }) {
                         })
                       : "Fecha no disponible"}
                   </p>
-                </div>
-                
+                </div> */}
+                <NannyDetails
+                convertTimestampToDate={convertTimestampToDate}
+  selectedNanny={selectedNanny}
+  onDeleteNanny={(id) => {
+    // Lógica para eliminar la niñera
+    console.log("Niñera eliminada:", id);
+  }}
+/>
                 
                 
                 {/* Botón para mostrar modal */}
@@ -406,12 +429,7 @@ export default function NannyModal({ isOpen, onClose, nannies, reload }) {
               >
                 Guardar Cambios
               </button>
-              <button
-                onClick={handleCloseDetails}
-                className="px-6 py-3 bg-gray-500 text-white font-semibold rounded-lg shadow-md hover:bg-gray-600 active:scale-95 focus:outline-none focus:ring-4 focus:ring-gray-300 transition-all duration-300"
-              >
-                Cancelar
-              </button>
+          {/* s */}
             </div>
             
             

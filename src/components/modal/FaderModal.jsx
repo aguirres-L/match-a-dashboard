@@ -59,6 +59,8 @@ export default function FaderModal({ isOpen, onClose, mothers, reload }) {
     return new Date(milliseconds);
   }
 
+console.log(selectedMother,'selectedMother')
+
   return (
     <Modal
       isOpen={isOpen}
@@ -66,12 +68,24 @@ export default function FaderModal({ isOpen, onClose, mothers, reload }) {
       className="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6 overflow-hidden transform transition-transform"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
     >
-          <div className={`max-h-[100vh]  mb-4 ${!showModal?'overflow-y-auto':''}`}> {/* Controlo el scroll del modal principal */}
+      <div
+        className={`max-h-[90vh]  mb-4 ${!showModal ? "overflow-y-auto" : ""}`}
+      >
+        {" "}
+        {/* Controlo el scroll del modal principal */}
         {!selectedMother ? (
           <div>
-            <h2 className="text-2xl font-semibold text-gray-800 mb-1 mt-4">
-              Lista de Padres
-            </h2>
+            <div className="flex flex-row justify-between items-center p-4 border-b border-gray-200">
+              <h2 className="text-2xl font-semibold text-gray-800">
+                Lista de Padres
+              </h2>
+              <button
+                className="px-3 py-1 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                onClick={onClose}
+              >
+                X
+              </button>
+            </div>
             <ul className="space-y-4">
               {/* Verifica si mothers es un array válido */}
               {Array.isArray(mothers) && mothers.length > 0 ? (
@@ -103,78 +117,85 @@ export default function FaderModal({ isOpen, onClose, mothers, reload }) {
                 <p className="text-gray-600">No se encontraron datos.</p>
               )}
             </ul>
-            <div className="mt-6 flex justify-end">
+            {/*      <div className="mt-6 flex justify-end">
               <button
                 className="px-6 py-2 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition"
                 onClick={onClose}
               >
                 Cerrar
               </button>
-            </div>
+            </div> */}
           </div>
         ) : (
           <div
-          className={`transition-transform duration-300 ${
-            showModal ? "-translate-x-1" : ""
-          }`}  >
-            <h2 className="text-2xl font-extrabold text-gray-800 mb-1 mt-4 tracking-tight">
-              Detalles de Padre
-            </h2>
-   {/* Creado  */}
-            <div className="space-y-6 bg-white p-6 rounded-xl shadow-lg ring-1 ring-gray-200">
-              
-              
-              
-            <div className="group relative flex flex-row justify-between ">
-              
-              
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">
-                  Creados
-                </label>
-                <p className="text-sm font-semibold text-gray-700">
-                  {selectedMother?.createdAt
-                    ? convertTimestampToDate(
-                        selectedMother.createdAt.seconds,
-                        selectedMother.createdAt.nanoseconds
-                      ).toLocaleString("es-ES", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        second: "2-digit",
-                      })
-                    : "Fecha no disponible"}
-                </p>
-              </div>
-              
-              
-              
-              {/* Botón para mostrar modal */}
+            className={`transition-transform duration-300 ${
+              showModal ? "-translate-x-1" : ""
+            }`}
+          >
+            <div className="flex flex-row justify-between items-center p-4 border-b border-gray-200">
+              <h2 className="text-2xl font-extrabold text-gray-800 mb-1 mt-4 tracking-tight">
+                Detalles de Padre
+              </h2>
+              {/*   <button
+                onClick={handleCloseDetails}
+    className="px-3 py-1 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                   >
+                
+              </button> */}
               <button
-                onClick={() => setShowModal(true)}
-                className="p-3 bg-[#e085cf] text-white rounded-full shadow-md hover:bg-[#b26aa5] transition"
+                onClick={handleCloseDetails}
+                class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    fill="none"
-                    stroke="#e9e2e2"
-                    stroke-width="2"
-                    d="m9 6l6 6l-6 6"
-                  />
-                </svg>
+                <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-red-600  rounded-md group-hover:bg-transparent group-hover:dark:bg-transparent">
+                  X
+                </span>
               </button>
             </div>
-              
-              
-              
-              
+            {/* Creado  */}
+            <div className="space-y-6 bg-white p-6 rounded-xl shadow-lg ring-1 ring-gray-200">
+              <div className="group relative flex flex-row justify-between ">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">
+                    Creados
+                  </label>
+                  <p className="text-sm font-semibold text-gray-700">
+                    {selectedMother?.createdAt
+                      ? convertTimestampToDate(
+                          selectedMother.createdAt.seconds,
+                          selectedMother.createdAt.nanoseconds
+                        ).toLocaleString("es-ES", {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          second: "2-digit",
+                        })
+                      : "Fecha no disponible"}
+                  </p>
+                </div>
+
+                {/* Botón para mostrar modal */}
+                <button
+                  onClick={() => setShowModal(true)}
+                  className="p-3 bg-[#e085cf] text-white rounded-full shadow-md hover:bg-[#b26aa5] transition"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      fill="none"
+                      stroke="#e9e2e2"
+                      stroke-width="2"
+                      d="m9 6l6 6l-6 6"
+                    />
+                  </svg>
+                </button>
+              </div>
+
               <div className="group relative">
                 <label className="block text-sm font-semibold text-gray-700 mb-1">
                   Nombre
@@ -272,11 +293,9 @@ export default function FaderModal({ isOpen, onClose, mothers, reload }) {
                   {selectedMother?.sub ? "No Subscripto" : "Subscripto"}
                 </button>
               </div>
-            
             </div>
-
             {console.log(selectedMother, "form in selectedMother")}
-    {/* Botones de acción */}
+            {/* Botones de acción */}
             <div className="mt-8 flex justify-end space-x-4">
               <button
                 onClick={handleSave}
@@ -284,26 +303,26 @@ export default function FaderModal({ isOpen, onClose, mothers, reload }) {
               >
                 Guardar Cambios
               </button>
-              <button
+              {/* <button
                 onClick={handleCloseDetails}
                 className="px-6 py-3 bg-gray-500 text-white font-semibold rounded-lg shadow-md hover:bg-gray-600 focus:ring-4 focus:ring-gray-300 transition-all"
               >
                 Cancelar
-              </button>
+              </button> */}
             </div>
-            
-              {/* Modal desplazado */}    {/* ------------------------------------  implementar los nuevos datos al formulario de niñera */}
-              <div
-                className={`absolute top-0 right-0 w-full sm:w-2/2 h-full bg-[#381c38e0] shadow-xl transform transition-transform duration-300 ${
-                  showModal ? "translate-x-0" : "translate-x-full"
-                }`}
-              >
-               
-            {/*    <ModalDesplazado typeModal={'feedback'} setShowModal={setShowModal} /> */}
-               <ModalDesplazado typeModal={'feedback'} setShowModal={setShowModal} />
-               
-              </div>
-            
+            {/* Modal desplazado */}{" "}
+            {/* ------------------------------------  implementar los nuevos datos al formulario de niñera */}
+            <div
+              className={`absolute top-0 right-0 w-full sm:w-2/2 h-full bg-[#381c38e0] shadow-xl transform transition-transform duration-300 ${
+                showModal ? "translate-x-0" : "translate-x-full"
+              }`}
+            >
+              {/*    <ModalDesplazado typeModal={'feedback'} setShowModal={setShowModal} /> */}
+              <ModalDesplazado
+                typeModal={"feedback"}
+                setShowModal={setShowModal}
+              />
+            </div>
           </div>
         )}
       </div>

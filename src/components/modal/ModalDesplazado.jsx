@@ -70,7 +70,7 @@ export default function ModalDesplazado({typeModal,setShowModal}){
  /*     value={interviewNotes} */
  /*     onChange={(e) => setInterviewNotes(e.target.value)} */
      rows={5}
-     className="w-full h-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#f83dd6] focus:outline-none transition duration-300 ease-in-out shadow-sm hover:shadow-md resize-none"
+     className="w-full h-[50vh] px-4 py-3 rounded-lg border text-gray-950 border-gray-300 focus:ring-2 focus:ring-[#f83dd6] focus:outline-none transition duration-300 ease-in-out shadow-sm hover:shadow-md resize-none"
      placeholder="Escribe notas sobre la entrevista aquí..."
    ></textarea>
  </div>
@@ -81,10 +81,10 @@ export default function ModalDesplazado({typeModal,setShowModal}){
       
      
          {typeModal === 'feedback' ? (
-  <div className="flex flex-col h-[100vh] ">
+  <div className="flex flex-col h-[95vh] ">
     {/* Cabecera */}
     <div className="flex items-center justify-between p-4 bg-[#e085cf] text-white">
-      <h2 className="text-lg font-semibold">Chat de Feedback</h2>
+      <h2 className="text-lg font-semibold"> Feedback</h2>
       <button
         onClick={() => setShowModal(false)}
         className="p-2 rounded-full bg-[#c273b4] hover:bg-[#a9619a] transition"
@@ -116,13 +116,13 @@ export default function ModalDesplazado({typeModal,setShowModal}){
       </div>
 
       {/* Mensaje enviado */}
-      <div className="flex items-end justify-end space-x-3">
+   {/*    <div className="flex items-end justify-end space-x-3">
         <div className="max-w-md bg-[#e085cf] text-white p-3 rounded-xl shadow-sm">
           <p className="text-sm">¡Gracias! Ha sido una gran experiencia.</p>
         </div>
         <div className="w-10 h-10 rounded-full bg-[#e085cf]"></div>
       </div>
-      
+       */}
       
       
     </div>
@@ -132,7 +132,7 @@ export default function ModalDesplazado({typeModal,setShowModal}){
     
 
     {/* Input de Mensajes */}
-    <div className="p-4 bg-white border-t border-gray-200">
+   {/*  <div className="p-4 bg-white border-t border-gray-200">
       <div className="flex items-center space-x-3">
         <input
           type="text"
@@ -153,7 +153,7 @@ export default function ModalDesplazado({typeModal,setShowModal}){
           </svg>
         </button>
       </div>
-    </div>
+    </div> */}
   </div>
 ) : (
   ""

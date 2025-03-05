@@ -92,6 +92,7 @@ console.log(selectedMother,'selectedMother')
                 mothers.map((mother) => (
                   <li
                     key={mother.idFirestore}
+                    /* Colores y efectos de hover */
                     className="p-4 bg-blue-50 rounded-lg shadow hover:shadow-md cursor-pointer hover:bg-blue-100 transition"
                     onClick={() => handleMotherClick(mother)}
                   >
@@ -118,7 +119,7 @@ console.log(selectedMother,'selectedMother')
               )}
             </ul>
             {/*      <div className="mt-6 flex justify-end">
-              <button
+              <button 
                 className="px-6 py-2 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition"
                 onClick={onClose}
               >

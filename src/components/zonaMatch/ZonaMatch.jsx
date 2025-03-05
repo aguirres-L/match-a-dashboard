@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { deleteDocumentFirebase, resetServicesArray } from "../../services/data-firebase";
 import SvgWpp from "../svg/SvgWpp";
+import SvgArrowUnder from "../svg/SvgArrowUnder";
+import SvgArrowUP from "../svg/SvgArrowUP";
+import SvgDelet from "../svg/SvgDelet";
 
 export default function ZonaMatch({ matches, setMatches }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -53,9 +56,13 @@ export default function ZonaMatch({ matches, setMatches }) {
       {isModalOpen && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
           <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm">
+            <div className="flex flex-row">
             <h4 className="text-lg font-bold text-gray-800 mb-4">
               Confirmar eliminación
             </h4>
+
+              <SvgDelet/>
+            </div>
             <p className="text-gray-600 mb-6">
               ¿Estás seguro de que deseas eliminar este match? Esta acción no se
               puede deshacer.
@@ -98,26 +105,27 @@ function MatchCard({ match, openModal }) {
       {/* Cabecera de la tarjeta */}
       <div
         className={`p-4 flex justify-between items-center bg-gradient-to-r ${
-          isExpanded ? "from-blue-600 to-blue-400" : "from-blue-300 to-blue-100"
+          isExpanded ? "from-[#e085cf] to-blue-400" : "from-[#e085cf] to-blue-100"
         } transition-all duration-300`}
       >
         <div>
         <h4 className="text-lg font-bold text-white">
-            {match.nanny.name} & {match.mother.name}
+        <span className="text-blue-200"> {match.nanny.name}</span> & <span className="text-green-300"> {match.mother.name}</span>
           </h4>
           <p className="text-sm text-gray-100">
-            Barrio: {match.nanny.neighborhood} / {match.mother.neighborhood}
+            Barrio: <span className="text-blue-200"> {match.nanny.neighborhood}</span> / <span className="text-green-300" > {match.mother.neighborhood}</span>
           </p>
         </div>
         <button
           className={`px-3 py-1 text-sm font-medium rounded ${
             isExpanded
-              ? "bg-white text-blue-500 hover:bg-gray-100"
-              : "bg-blue-500 text-white hover:bg-blue-600"
+              ? "bg-white text-white hover:bg-gray-100"
+              : "bg-white text-white hover:bg-gray-100"
           } shadow-md transition-all duration-300`}
           onClick={() => setIsExpanded(!isExpanded)}
         >
-          {isExpanded ? "Contraer" : "Expandir"}
+          {isExpanded ? <SvgArrowUP/> : <SvgArrowUnder/>}
+          {/* {isExpanded ? "Contraer" : "Expandir"} */}
         </button>
       </div>
 
@@ -163,24 +171,67 @@ function MatchCard({ match, openModal }) {
                         key={index}
                         className="p-3 bg-blue-100 rounded-lg shadow-sm border border-blue-300"
                       >
+                        {console.log(service)}
+                     
+{/* Detalle del servicio desde match  */}
+                     
+{/* tipo de servicio  */}
+                        <p className="text-sm">
+                          <strong>Tipo de Servicio:</strong>{" "}
+                          <span className="text-blue-700">
+                            {service.contratacion}
+                          </span>
+                        </p>
+{/* Dias re queridos  */}
                         <p className="text-sm">
                           <strong>Días:</strong>{" "}
                           <span className="text-blue-700">
                             {service.days.join(", ")}
                           </span>
                         </p>
-                        <p className="text-sm">
-                          <strong>Plan:</strong>{" "}
-                          <span className="text-blue-700">
-                            {service.plan}
-                          </span>
-                        </p>
+
+                        {/* Horario */}
                         <p className="text-sm">
                           <strong>Horario:</strong>{" "}
                           <span className="text-blue-700">
                             {service.schedule}
                           </span>
                         </p>
+                        <br />
+{/* Economica*/}
+                        <p className="text-sm">
+                          <strong>Propuesta Economica:</strong>{" "}
+                          <span className="text-blue-700">
+                            {service.propuestaEconomica}
+                          </span>
+                        </p>
+{/* Tipo de pago */}
+                        <p className="text-sm">
+                          <strong>Tipo de Pago:</strong>{" "}
+                          <span className="text-blue-700">
+                            {service.typePago}
+                          </span>
+                        </p>
+                        
+
+{/* Zonas Barrios */}
+
+<p className="text-sm">
+  <strong>Barrios/Zona:</strong>{" "}
+  {service.barrioZona.join(", ")} {/* Mostrará: Alta Córdoba, Nueva Córdoba, Cerro de las Rosas */}
+
+</p>
+
+<br />
+
+{/* Cantidad de niños */}
+<p className="text-sm">
+                          <strong>Cantidad de Niños:</strong>{" "}
+                          <span className="text-blue-700">
+                            {service.childer.length}
+                          </span>
+                        </p>
+
                       </div>
                     ))}
                   </div>

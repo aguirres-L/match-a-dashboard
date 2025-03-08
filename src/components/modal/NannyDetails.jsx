@@ -2,6 +2,8 @@ import { useState } from "react";
 import { deleteDocumentFirebase } from "../../services/data-firebase";
 import SvgDelet from "../svg/SvgDelet";
 
+import imgLogoNiñeraYa from "../../assets/logo-niñeras-ya.JPG";
+
 const NannyDetails = ({ convertTimestampToDate, selectedNanny, onDeleteNanny }) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
 
@@ -27,7 +29,7 @@ console.log(selectedNanny.urlAvatar, "selectedNanny from NannyDetails");
     <div>
       {/* Detalles de la niñera */}
       <div>
-        <img src={selectedNanny.urlAvatar} alt="Niñeras ya" className="w-auto h-24 rounded-sm" />
+        <img src={selectedNanny.urlAvatar || imgLogoNiñeraYa } alt="Niñeras ya" className="w-auto h-24 rounded-sm" />
         <label className="block text-sm font-semibold text-gray-700 mb-1">
           Creado
         </label>

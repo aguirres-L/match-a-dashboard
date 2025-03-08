@@ -4,6 +4,8 @@ import { updateDocumentFirebase } from "../../services/data-firebase";
 import SvgWpp from "../svg/SvgWpp";
 import ServiceList from "./ServiceList.jsx";
 import ModalDesplazado from "./ModalDesplazado.jsx";
+import SvgArrowRGrande from "../svg/SvgArrowRGrande.jsx";
+import SvgCloseX from "../svg/SvgCloseX.jsx";
 export default function FaderModal({ isOpen, onClose, mothers, reload }) {
   const [selectedMother, setSelectedMother] = useState(null);
   const [showModal, setShowModal] = useState(false); // -------------------
@@ -83,41 +85,50 @@ console.log(selectedMother,'selectedMother')
                 className="px-3 py-1 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                 onClick={onClose}
               >
-                X
+                        <SvgCloseX />
+                
               </button>
             </div>
             <ul className="space-y-4">
-              {/* Verifica si mothers es un array válido */}
-              {Array.isArray(mothers) && mothers.length > 0 ? (
-                mothers.map((mother) => (
-                  <li
-                    key={mother.idFirestore}
-                    /* Colores y efectos de hover */
-                    className="p-4 bg-blue-50 rounded-lg shadow hover:shadow-md cursor-pointer hover:bg-blue-100 transition"
-                    onClick={() => handleMotherClick(mother)}
-                  >
-                    <p className="text-lg font-medium text-gray-800">
-                      {mother.name || "Sin nombre"}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      {mother.address || "Dirección no disponible"}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      {mother.neighborhood || "Barrio no disponible"}
-                    </p>
-                    <p
-                      className={`text-sm font-semibold mt-2 ${
-                        mother.sub ? "text-green-600" : "text-red-600"
-                      }`}
-                    >
-                      {mother.sub ? "Sub" : "No Sub"}
-                    </p>
-                  </li>
-                ))
-              ) : (
-                <p className="text-gray-600">No se encontraron datos.</p>
-              )}
-            </ul>
+  {/* Verifica si mothers es un array válido */}
+  {Array.isArray(mothers) && mothers.length > 0 ? (
+    // Ordenar y dividir la lista
+    mothers
+      .filter((mother) => mother.services && mother.services.length > 0) // Padres con servicios
+      .concat(mothers.filter((mother) => !mother.services || mother.services.length === 0)) // Padres sin servicios
+      .map((mother) => (
+        <li
+          key={mother.idFirestore}
+          /* Colores y efectos de hover */
+          className="p-4 bg-blue-50 rounded-lg shadow hover:shadow-md cursor-pointer hover:bg-blue-100 transition"
+          onClick={() => handleMotherClick(mother)}
+          style={{
+            border: mother.services && mother.services.length > 0 ? "2px solid #62f584" : "none", // Borde verde si tiene servicios
+          }}
+        >
+          {console.log(mother.services, 'mother')}
+          <p className="text-lg font-medium text-gray-800">
+            {mother.name || "Sin nombre"}
+          </p>
+          <p className="text-sm text-gray-600">
+            {mother.address || "Dirección no disponible"}
+          </p>
+          <p className="text-sm text-gray-600">
+            {mother.neighborhood || "Barrio no disponible"}
+          </p>
+          <p
+            className={`text-sm font-semibold mt-2 ${
+              mother.sub ? "text-green-600" : "text-red-600"
+            }`}
+          >
+            {mother.sub ? "Sub" : "No Sub"}
+          </p>
+        </li>
+      ))
+  ) : (
+    <p className="text-gray-600">No se encontraron datos.</p>
+  )}
+</ul>
             {/*      <div className="mt-6 flex justify-end">
               <button 
                 className="px-6 py-2 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition"
@@ -137,18 +148,13 @@ console.log(selectedMother,'selectedMother')
               <h2 className="text-2xl font-extrabold text-gray-800 mb-1 mt-4 tracking-tight">
                 Detalles de Padre
               </h2>
-              {/*   <button
-                onClick={handleCloseDetails}
-    className="px-3 py-1 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-                   >
-                
-              </button> */}
+              
               <button
                 onClick={handleCloseDetails}
                 class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800"
               >
                 <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-red-600  rounded-md group-hover:bg-transparent group-hover:dark:bg-transparent">
-                  X
+                          <SvgCloseX />
                 </span>
               </button>
             </div>
@@ -156,8 +162,11 @@ console.log(selectedMother,'selectedMother')
             <div className="space-y-6 bg-white p-6 rounded-xl shadow-lg ring-1 ring-gray-200">
               <div className="group relative flex flex-row justify-between ">
                 <div>
+
+                <img src={selectedMother.urlAvatar} alt="" />
+
                   <label className="block text-sm font-semibold text-gray-700 mb-1">
-                    Creados
+                    Usuario Creado
                   </label>
                   <p className="text-sm font-semibold text-gray-700">
                     {selectedMother?.createdAt
@@ -174,6 +183,7 @@ console.log(selectedMother,'selectedMother')
                         })
                       : "Fecha no disponible"}
                   </p>
+
                 </div>
 
                 {/* Botón para mostrar modal */}
@@ -181,19 +191,7 @@ console.log(selectedMother,'selectedMother')
                   onClick={() => setShowModal(true)}
                   className="p-3 bg-[#e085cf] text-white rounded-full shadow-md hover:bg-[#b26aa5] transition"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      fill="none"
-                      stroke="#e9e2e2"
-                      stroke-width="2"
-                      d="m9 6l6 6l-6 6"
-                    />
-                  </svg>
+                 <SvgArrowRGrande/>
                 </button>
               </div>
 
@@ -322,6 +320,7 @@ console.log(selectedMother,'selectedMother')
               <ModalDesplazado
                 typeModal={"feedback"}
                 setShowModal={setShowModal}
+                selectedMother={selectedMother}
               />
             </div>
           </div>

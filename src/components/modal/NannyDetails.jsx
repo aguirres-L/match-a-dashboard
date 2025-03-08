@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { deleteDocumentFirebase } from "../../services/data-firebase";
+import SvgDelet from "../svg/SvgDelet";
 
 const NannyDetails = ({ convertTimestampToDate, selectedNanny, onDeleteNanny }) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -20,11 +21,13 @@ const NannyDetails = ({ convertTimestampToDate, selectedNanny, onDeleteNanny }) 
   const cancelDelete = () => {
     setShowConfirmation(false); // Cierra el modal
   };
+console.log(selectedNanny.urlAvatar, "selectedNanny from NannyDetails");
 
   return (
     <div>
       {/* Detalles de la niñera */}
       <div>
+        <img src={selectedNanny.urlAvatar} alt="Niñeras ya" className="w-auto h-24 rounded-sm" />
         <label className="block text-sm font-semibold text-gray-700 mb-1">
           Creado
         </label>
@@ -49,23 +52,10 @@ const NannyDetails = ({ convertTimestampToDate, selectedNanny, onDeleteNanny }) 
       <div className="mt-4">
         <button
           onClick={handleDelete}
-          className="p-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-300 ease-in-out transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+          className="p-2 bg-red-200 text-white rounded-md hover:bg-red-300 transition duration-300 ease-in-out transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
         >
           {/* Ícono de basurero SVG */}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6  " // Animación de rebote animate-bounce ----> para qu eeles tilo salte o rebote **** Estilos ****
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-            />
-          </svg>
+         <SvgDelet/>
         </button>
       </div>
 

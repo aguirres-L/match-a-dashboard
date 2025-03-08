@@ -4,6 +4,10 @@ import { updateDocumentFirebase } from "../../services/data-firebase";
 import SvgWpp from "../svg/SvgWpp";
 import ModalDesplazado from "./ModalDesplazado";
 import NannyDetails from "./NannyDetails";
+import SvgArrowRGrande from "../svg/SvgArrowRGrande";
+import SvgDelet from "../svg/SvgDelet";
+import SvgCloseX from "../svg/SvgCloseX";
+import SvgCV from "../svg/SvgCV";
 
 export default function NannyModal({ isOpen, onClose, nannies, reload }) {
   const [selectedNanny, setSelectedNanny] = useState(null);
@@ -70,7 +74,7 @@ console.log(selectedNanny.idFirestore,'selectedNanny');
     className="px-3 py-1 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
     onClick={onClose}
   >
-    X
+    <SvgCloseX/>
   </button>
 </div>
          
@@ -122,7 +126,7 @@ Detalle de Niñera              </h2>
                 className="px-3 py-1 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                 onClick={handleCloseDetails}
               >
-                X
+                <SvgCloseX/>
               </button>
             </div>
             {/* Creado  */}
@@ -165,19 +169,7 @@ Detalle de Niñera              </h2>
                   onClick={() => setShowModal(true)}
                   className="p-3 bg-[#e085cf] text-white rounded-full shadow-md hover:bg-[#b26aa5] transition"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      fill="none"
-                      stroke="#e9e2e2"
-                      stroke-width="2"
-                      d="m9 6l6 6l-6 6"
-                    />
-                  </svg>
+               <SvgArrowRGrande/>
                 </button>
               </div>
 
@@ -394,8 +386,9 @@ Detalle de Niñera              </h2>
                   rel="noopener noreferrer"
                   className="text-blue-500 hover:underline"
                 >
-                  Ver CV
+                  Ver CV  <SvgCV/>
                 </a>
+                
               </div>
 
               {/* Estado */}

@@ -5,7 +5,7 @@ import SvgWpp from "../svg/SvgWpp";
 import ModalDesplazado from "./ModalDesplazado";
 import NannyDetails from "./NannyDetails";
 import SvgArrowRGrande from "../svg/SvgArrowRGrande";
-import SvgDelet from "../svg/SvgDelet";
+//import SvgDelet from "../svg/SvgDelet";
 import SvgCloseX from "../svg/SvgCloseX";
 import SvgCV from "../svg/SvgCV";
 
@@ -13,8 +13,8 @@ export default function NannyModal({ isOpen, onClose, nannies, reload }) {
   const [selectedNanny, setSelectedNanny] = useState(null);
   const [showModal, setShowModal] = useState(false); // -------------------
   const generateWhatsAppLink = (name, phone) => {
-    const message = `Hola ${name}, me gustaría ponerme en contacto contigo.`;
-    const encodedMessage = encodeURIComponent(message);
+    const message = `Hola ${name},te escribimos de Niñeras-Ya, nos gustaría ponernos en contacto contigo.`;
+    const encodedMessage = encodeURIComponent(message); 
     return `https://wa.me/${phone}?text=${encodedMessage}`;
   };
 
@@ -133,37 +133,14 @@ Detalle de Niñera              </h2>
             <div className="space-y-4 bg-white p-6 rounded-xl shadow-lg ring-1 ring-gray-200">
               <div className="group relative flex flex-row justify-between ">
               
-              
-              {/*   <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">
-                    Creado
-                  </label>
-                  <p className="text-sm font-semibold text-gray-700">
-                    {selectedNanny?.createdAt
-                      ? convertTimestampToDate(
-                          selectedNanny.createdAt.seconds,
-                          selectedNanny.createdAt.nanoseconds
-                        ).toLocaleString("es-ES", {
-                          day: "2-digit",
-                          month: "2-digit",
-                          year: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          second: "2-digit",
-                        })
-                      : "Fecha no disponible"}
-                  </p>
-                </div> */}
-                <NannyDetails
-                convertTimestampToDate={convertTimestampToDate}
-  selectedNanny={selectedNanny}
-  onDeleteNanny={(id) => {
-    // Lógica para eliminar la niñera
-    console.log("Niñera eliminada:", id);
-  }}
-/>
-                
-                
+                      <NannyDetails
+                        convertTimestampToDate={convertTimestampToDate}
+                        selectedNanny={selectedNanny}
+                        onDeleteNanny={(id) => {
+                          // Lógica para eliminar la niñera
+                          console.log("Niñera eliminada:", id);
+                        }}
+                      />
                 {/* Botón para mostrar modal */}
                 <button
                   onClick={() => setShowModal(true)}
@@ -379,17 +356,22 @@ Detalle de Niñera              </h2>
               </div>
 
               {/* CV */}
-              <div className="group relative">
-                <a
-                  href={selectedNanny.cv}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 hover:underline"
-                >
-                  Ver CV  <SvgCV/>
-                </a>
-                
-              </div>
+              
+                    <div className="group relative">
+                      {selectedNanny.cv
+                        ? (
+                          <a
+                            href={selectedNanny.cv}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-500 hover:underline"
+                          >
+                            Ver CV  <SvgCV />
+                          </a>
+                        )
+                        : 'No hay CV'}
+                    </div>
+            
 
               {/* Estado */}
               <div className="flex items-center justify-between bg-gray-50 p-4 rounded-lg shadow-sm ring-1 ring-gray-200">
@@ -429,7 +411,7 @@ Detalle de Niñera              </h2>
       
   {/* Modal desplazado */}    {/* ------------------------------------  implementar los nuevos datos al formulario de niñera */}
   <div
-    className={`absolute top-0 right-0 w-full sm:w-2/2 h-full bg-[#381c38e0] shadow-xl transform transition-transform duration-300 ${
+    className={`absolute top-0 right-0 w-full sm:w-2/2 h-[60%] bg-[#381c38e0] shadow-xl transform transition-transform duration-300 ${
       showModal ? "translate-x-0" : "translate-x-full"
     }`}
   >

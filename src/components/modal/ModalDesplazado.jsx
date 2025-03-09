@@ -1,9 +1,17 @@
+import SvgBad from "../svg/SvgBad";
 import SvgCloseX from "../svg/SvgCloseX";
+import SvgHappy from "../svg/SvgHappy";
+// Verifica si selectedMother y sus propiedades están definidas
 
 export default function ModalDesplazado({ typeModal, setShowModal, selectedMother }) {
-  // Verifica si selectedMother y sus propiedades están definidas
   const hasServices = selectedMother?.services?.length > 0;
   const hasChats = hasServices && selectedMother.services[0]?.chats?.length > 0;
+
+  const saveDateOfEntrevista =()=>{
+    alert('tengo que gardar los datos de la entrevista en firebase')
+    setShowModal(false)
+
+  }
 
   return (
     <>
@@ -35,7 +43,7 @@ export default function ModalDesplazado({ typeModal, setShowModal, selectedMothe
           {/* Resultado de la entrevista */}
           <div className="space-y-1">
             <p className="block text-sm font-semibold">Resultado de la Entrevista</p>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-4 justify-center">
               <label className="flex items-center space-x-2">
                 <input
                   type="radio"
@@ -43,8 +51,11 @@ export default function ModalDesplazado({ typeModal, setShowModal, selectedMothe
                   value="liked"
                   className="h-4 w-4 text-green-500 focus:ring-green-400"
                 />
+             <SvgHappy/>
+
                 <span className="text-sm">Le gustó</span>
               </label>
+
               <label className="flex items-center space-x-2">
                 <input
                   type="radio"
@@ -52,6 +63,7 @@ export default function ModalDesplazado({ typeModal, setShowModal, selectedMothe
                   value="notLiked"
                   className="h-4 w-4 text-red-500 focus:ring-red-400"
                 />
+           <SvgBad/> 
                 <span className="text-sm">No le gustó</span>
               </label>
             </div>
@@ -66,6 +78,7 @@ export default function ModalDesplazado({ typeModal, setShowModal, selectedMothe
               placeholder="Escribe notas sobre la entrevista aquí..."
             ></textarea>
           </div>
+          <button onClick={saveDateOfEntrevista} className="p-2 rounded-sm bg-green-500" >Guardar</button>
         </div>
       ) : null}
 

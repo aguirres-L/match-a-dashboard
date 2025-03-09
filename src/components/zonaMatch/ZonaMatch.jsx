@@ -41,7 +41,7 @@ export default function ZonaMatch({ matches, setMatches }) {
 
   return (
     <div className="mt-6 bg-gray-50 shadow-md rounded-lg p-6 w-full max-w-4xl mx-auto">
-      <h3 className="text-2xl font-extrabold text-gray-800 mb-6">Matches Creados</h3>
+      <h3 className="text-2xl font-extrabold text-gray-800 mb-6">Matchs Creados</h3>
       <ul className="space-y-6">
         {matches?.map((match) => (
           <MatchCard

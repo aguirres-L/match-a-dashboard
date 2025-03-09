@@ -1,11 +1,5 @@
-Padres **********
 
-1 - seleccion padre, colocar que cada card del padres tenga 3 tipos de colores, uno para cuando no tiene ningun servicios, otro para cuadno el servicio exista pero este en pausa y uno para cuadno el servicio 
-este ya finalizado y listo. 
 
-2- mejorar la ui del padre seleccionado, colocar mas datos
-
-3 colocar en la ui el avatar de cada padre 
 
 
 
@@ -27,19 +21,21 @@ con las niñeras que ya estan lista para trabajar y las que todava no
 
 
 
-Modal niñeras   **********
-
-1 colocar animacion para el delet de la niñear "svg"
-
-2 el buton para desplazar el anotador de entrevista podria colocarle el svg de edit para que se entiede que puede escribir 
-
-3 hacer la coneccion para añadir los nuevos datos que se van a crear en el componente para escribir detalle sobre la cita , fecha , datos de la niñera , si le gusto o no - aca podria colocar los emojis :) :(
-
-4 colocar svg de dowland para el cv de la niñera 
+Modal niñeras   **********  0000
 
 
 
+3 hacer la coneccion para añadir los nuevos datos que se van a crear en el componente para escribir
+ detalle sobre la cita , fecha , datos de la niñera , si le gusto o no - aca podria colocar los emojis :) :(
 
+4 los datos de la entrevista se debe de guardar en la base de datos 
+
+5 en el modal de desplzado tendria qe colocar los emoji para poder indicar que estan bien o mal la seleccion de la niñeras
+
+
+
+
+// platafomra match-a 
 
 ui de niñera   **********
 

@@ -389,7 +389,6 @@ function MatchUI() {
     
       </div>
 
-{/* ------------ Profesionales y Clientes ---------------------- ---------------------- */}
 
 
 
@@ -471,7 +470,7 @@ function MatchUI() {
               onDragOver={(event) => event.preventDefault()}
               onDrop={(event) => onDrop(event, "mother")}
             >
-              <h3 className="text-md font-bold mb-2">Madre Seleccionada</h3>
+              <h3 className="text-md font-bold mb-2">Padre Seleccionado</h3>
               {selectedMother ? (
                 <div className="p-3 bg-pink-100 rounded flex justify-between items-center">
                   <div>

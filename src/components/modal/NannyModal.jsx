@@ -53,9 +53,6 @@ export default function NannyModal({ isOpen, onClose, nannies, reload }) {
     // Creamos un objeto Date con los milisegundos
     return new Date(milliseconds);
   }
-/* console.log(selectedNanny,'nana');
-console.log(selectedNanny.idFirestore,'selectedNanny');
- */
   return (
     <Modal
       isOpen={isOpen}
@@ -87,7 +84,6 @@ console.log(selectedNanny.idFirestore,'selectedNanny');
                   className="p-4 bg-blue-50 rounded-lg shadow hover:shadow-md cursor-pointer hover:bg-blue-100 transition"
                   onClick={() => handleNannyClick(nanny)}
                 >
-                  {console.log(nanny, "dato de nani")}
                   <p className="text-lg font-medium text-gray-800">
                     {nanny.name}
                   </p>
@@ -138,7 +134,7 @@ Detalle de Niñera              </h2>
                         selectedNanny={selectedNanny}
                         onDeleteNanny={(id) => {
                           // Lógica para eliminar la niñera
-                          console.log("Niñera eliminada:", id);
+                        //  console.log("Niñera eliminada:", id);
                         }}
                       />
                 {/* Botón para mostrar modal */}
@@ -165,6 +161,23 @@ Detalle de Niñera              </h2>
                   placeholder="Introduce el nombre"
                 />
               </div>
+
+                 {/* CV */}
+              
+                 <div className="group relative">
+                      {selectedNanny.cv
+                        ? (
+                          <a
+                            href={selectedNanny.cv}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-500 hover:underline"
+                          >
+                            Ver CV  <SvgCV />
+                          </a>
+                        )
+                        : 'No hay CV'}
+                    </div>
 
               <div className="flex flex-row gap-4">
                 {/* Telefono */}
@@ -355,22 +368,7 @@ Detalle de Niñera              </h2>
                 />
               </div>
 
-              {/* CV */}
-              
-                    <div className="group relative">
-                      {selectedNanny.cv
-                        ? (
-                          <a
-                            href={selectedNanny.cv}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-500 hover:underline"
-                          >
-                            Ver CV  <SvgCV />
-                          </a>
-                        )
-                        : 'No hay CV'}
-                    </div>
+           
             
 
               {/* Estado */}

@@ -61,7 +61,6 @@ export default function FaderModal({ isOpen, onClose, mothers, reload }) {
     return new Date(milliseconds);
   }
 
-console.log(selectedMother,'selectedMother')
 
   return (
     <Modal
@@ -106,7 +105,6 @@ console.log(selectedMother,'selectedMother')
             border: mother.services && mother.services.length > 0 ? "2px solid #62f584" : "none", // Borde verde si tiene servicios
           }}
         >
-          {console.log(mother.services, 'mother')}
           <p className="text-lg font-medium text-gray-800">
             {mother.name || "Sin nombre"}
           </p>
@@ -293,7 +291,6 @@ console.log(selectedMother,'selectedMother')
                 </button>
               </div>
             </div>
-            {console.log(selectedMother, "form in selectedMother")}
             {/* Botones de acción */}
             <div className="mt-8 flex justify-end space-x-4">
               <button

@@ -23,7 +23,6 @@ const NannyDetails = ({ convertTimestampToDate, selectedNanny, onDeleteNanny }) 
   const cancelDelete = () => {
     setShowConfirmation(false); // Cierra el modal
   };
-console.log(selectedNanny.urlAvatar, "selectedNanny from NannyDetails");
 
   return (
     <div>

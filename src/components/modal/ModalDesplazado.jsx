@@ -4,14 +4,16 @@ import SvgHappy from "../svg/SvgHappy";
 // Verifica si selectedMother y sus propiedades están definidas
 
 export default function ModalDesplazado({ typeModal, setShowModal, selectedMother }) {
-  const hasServices = selectedMother?.services?.length > 0;
-  const hasChats = hasServices && selectedMother.services[0]?.chats?.length > 0;
+  //const hasServices = selectedMother?.services?.length > 0;
+ // const hasChats = hasServices && selectedMother.services[0]?.chats?.length > 0;
 
   const saveDateOfEntrevista =()=>{
     alert('tengo que gardar los datos de la entrevista en firebase')
     setShowModal(false)
 
   }
+/*   console.log(selectedMother.services[0]?.chats,'dato from modalDesplazado');
+   */
 
   return (
     <>
@@ -82,38 +84,47 @@ export default function ModalDesplazado({ typeModal, setShowModal, selectedMothe
         </div>
       ) : null}
 
-      {typeModal === 'feedback' ? (
-        <div className="flex flex-col h-[95vh]">
-          {/* Cabecera */}
-          <div className="flex items-center justify-between p-4 bg-[#e085cf] text-white">
-            <h2 className="text-lg font-semibold">Feedback de {selectedMother?.name || "Madre"}</h2>
-            <button
-              onClick={() => setShowModal(false)}
-              className="p-2 rounded-full bg-[#c273b4] hover:bg-[#a9619a] transition"
-            >
-              <SvgCloseX />
-            </button>
-          </div>
+{typeModal === 'feedback' ? (
+  <div className="flex flex-col h-[95vh]">
+    {/* Cabecera */}
+    <div className="flex items-center justify-between p-4 bg-[#e085cf] text-white">
+      <h2 className="text-lg font-semibold">Feedback de {selectedMother?.name || "Madre"}</h2>
+      <button
+        onClick={() => setShowModal(false)}
+        className="p-2 rounded-full bg-[#c273b4] hover:bg-[#a9619a] transition"
+      >
+        <SvgCloseX />
+      </button>
+    </div>
 
-          {/* Zona de Mensajes */}
-          <div className="flex-1 p-4 space-y-4 overflow-y-auto bg-gray-50">
-            {hasChats ? (
-              selectedMother.services[0].chats.map((chat, index) => (
-                <div key={index} className="flex items-start space-x-3">
-                  <div className="w-10 h-10 rounded-full bg-gray-300">
-                    <img src={selectedMother.urlAvatar || ''} alt="Avatar" />
-                  </div>
-                  <div className="max-w-md bg-white p-3 rounded-xl shadow-sm">
-                    <p className="text-sm text-gray-700">{chat}</p>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p>No hay mensajes</p>
-            )}
+    {/* Zona de Mensajes */}
+    <div className="flex-1 p-4 space-y-4 overflow-y-auto bg-gray-50">
+      {selectedMother?.services?.[0]?.chats?.length > 0 ? (
+        selectedMother.services[0].chats.map((chat, index) => (
+          <div key={index} className="flex items-start space-x-3">
+            {/* Avatar del remitente */}
+            <div className="w-10 h-10 rounded-full bg-gray-300">
+              <img
+                src={selectedMother.urlAvatar || ''}
+                alt="Avatar"
+                className="w-full h-full rounded-full object-cover"
+              />
+            </div>
+
+            {/* Mensaje */}
+            <div className="max-w-md bg-white p-3 rounded-xl shadow-sm">
+              <p className="text-sm text-gray-700">
+                <strong>{chat.sender}:</strong> {chat.text}
+              </p>
+            </div>
           </div>
-        </div>
-      ) : null}
+        ))
+      ) : (
+        <p className="text-center text-gray-500">No hay mensajes</p>
+      )}
+    </div>
+  </div>
+) : null}
     </>
   );
 }

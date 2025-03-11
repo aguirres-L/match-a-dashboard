@@ -14,6 +14,9 @@ import FaderModal from "./modal/FaderModal";
 
 // Import img Logo Niñera-Ya
 import logoNiñeraYa from "../assets/logo-niñeras-ya.JPG"
+import SvgUrl from "./svg/SvgUrl";
+//import MediaManager from "./urls/MediaManager";
+import MediaManager from "./urls/MediaManager";
 
 Modal.setAppElement("#root");
 function MatchUI() {
@@ -32,6 +35,7 @@ function MatchUI() {
 // state for modals
   const [isNannyModalOpen, setIsNannyModalOpen] = useState(false);
   const [isFaderModal, setIsFaderModal] = useState(false);
+  const [isOpenModalURL,setIsOpenModalURL] = useState(false)
 
   const [refesh, setRefesh] = useState(false);
   const [isSpinning, setIsSpinning] = useState(false);
@@ -171,7 +175,9 @@ function MatchUI() {
   }
   
   
-  
+  const toogleUrls=()=>{
+    setIsOpenModalURL(!isOpenModalURL)
+  }
   
   
   
@@ -203,7 +209,7 @@ function MatchUI() {
   
 
   return (
-    <div/*  style={{border:"solid 2px red"}} */ className="flex w-screen flex-col items-center bg-gray-100 min-h-screen p-6">
+    <div/*  style={{border:"solid 2px red"}} */ className="flex  flex-col items-center bg-gray-100 min-h-screen p-6">
 <div className="flex flex-row items-center mb-4 space-x-4">
   <img 
     src={logoNiñeraYa} 
@@ -235,12 +241,20 @@ function MatchUI() {
 
       {/* Botón flotante */}
       <button
-        className="fixed z-0 bottom-24 right-2 md:right-4 bg-green-500 text-white rounded-full p-4 shadow-lg hover:bg-green-600"
-        onClick={toogleFaderMOdal}
-      >
-        Padres
-      </button>
-      
+      className="fixed z-0 bottom-24 left-2 md:left-4 bg-white text-gray-400 rounded-full p-4 shadow-lg hover:bg-[#f9d8f3]"
+      onClick={toogleUrls}
+    >
+      Urls <SvgUrl/>
+    </button>
+
+{isOpenModalURL &&   <MediaManager onClose={toogleUrls} /> }
+     
+         <button
+         className="fixed z-0 bottom-24 right-2 md:right-4 bg-green-500 text-white rounded-full p-4 shadow-lg hover:bg-green-600"
+         onClick={toogleFaderMOdal}
+       >
+         Padres
+       </button>
       {/* Modal de padres */}
       <FaderModal
         isOpen={isFaderModal}

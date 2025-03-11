@@ -1,15 +1,6 @@
 
 
 
-
-
-MATCH CREADOS **********   x x c 
- 
-1 mejora la ui ya que falta actualizar la ui con los nuevos datos que estamos usando 
-2 colocar svg de alert para cuadno se desee eliminar un match 
-
-
-
 All Niñeras   **********
 
 1 colocar un filter con respecto a los barrios, y tambien mejorar la ui ya que la ui nueva tendria que tener una divicion entre las niñeras activas y listas para trabajar separadas de las que estan 
@@ -24,7 +15,6 @@ con las niñeras que ya estan lista para trabajar y las que todava no
 Modal niñeras   **********  0000
 
 
-
 3 hacer la coneccion para añadir los nuevos datos que se van a crear en el componente para escribir
  detalle sobre la cita , fecha , datos de la niñera , si le gusto o no - aca podria colocar los emojis :) :(
 
@@ -34,19 +24,4 @@ Modal niñeras   **********  0000
 
 
 
-
-// platafomra match-a 
-
-ui de niñera   **********
-
-ui niñeras colocar svg de clima sol y luna para hacer los match que tien la niñera y tambien exoesificar los colores y su signnificado, 
-ya  que un color respecta noche otro mañana  y otro tarde
-
-
-
-
-ui principal **********
-
-1  -  la url de los reel de istagram de la pagina para cliente nana-ya tiene que venir de firebase 
-        estas url se tendrian que modificar desde nana-ya-manager 
 

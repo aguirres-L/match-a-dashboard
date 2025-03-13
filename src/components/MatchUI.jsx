@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   addDocumentFirebase,
   getDocumentsFirebase,
+  listenToCollection,
   updateDocumentServiceState,
 } from "../services/data-firebase";
 import Modal from "react-modal";
@@ -17,6 +18,7 @@ import logoNiñeraYa from "../assets/logo-niñeras-ya.JPG"
 import SvgUrl from "./svg/SvgUrl";
 //import MediaManager from "./urls/MediaManager";
 import MediaManager from "./urls/MediaManager";
+import SvgCampana from "./svg/SvgCampana";
 
 Modal.setAppElement("#root");
 function MatchUI() {
@@ -24,6 +26,7 @@ function MatchUI() {
   const [nannies, setNannies] = useState([]);
   const [mothers, setMothers] = useState([]);
   const [allFader, setAllFader] = useState(null);
+
   const [selectedNanny, setSelectedNanny] = useState(null);
   const [selectedMother, setSelectedMother] = useState(null);
   const [dragging, setDragging] = useState(false);
@@ -41,11 +44,18 @@ function MatchUI() {
   const [isSpinning, setIsSpinning] = useState(false);
   const [isSpinningMadre, setIsSpinningMadre] = useState(false);
 
+  // count of notification 
+    const [countNotificateNana, setCountNotificateNana] = useState(null)
+    const [countNotificatePadres, setCountNotificatePadres] = useState(null)
+    const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+
   // hook isWeb
   let isSeeWeb = useIsWeb();
   /* console.log(isSeeWeb,'isWeb ?'); */
 
   useEffect(() => {
+
     async function getAllUsers() {
       try {
         const madre = await getDocumentsFirebase("madre");
@@ -66,12 +76,67 @@ function MatchUI() {
         /*    setNannies(nanniesWithStateTrue); */
         setNannies(nana);
         setMatches(matchesFirebase);
+
       } catch (error) {
         console.error("Error fetching documents: ", error);
       }
     }
+            /*  FUNCION PARA PODER ESCUCHAR LOS CAMBIOS  --- START */
+        
+         // Escuchar cambios en la colección "nana"
+         const unsubscribeNannies =  listenToCollection("nana", (data, changes) => {
+          // setNannies(data);
+      //    console.log(data,'from useEffecto in NANA reaction from cluod firestore')
+           // Mostrar notificaciones si hay cambios
+           changes.forEach((change) => {
+            if (change.type === "added") {
+              // Ignorar cambios durante la carga inicial
+              if (isInitialLoad) {
+          //      console.log("Carga inicial de niñeras, ignorando cambios.");
+                return;
+              }
+        
+              // Verificar si hay nuevas niñeras agregadas
+              if (data.length > nannies?.length) {
+          //      console.log(nannies, "nannies");
+                showNotification("Nueva niñera agregada", "success");
+                setCountNotificateNana(true);
+              }
+            }
+          });
+        
+          // Marcar la carga inicial como completada
+          if (isInitialLoad) {
+            setIsInitialLoad(false);
+          }
+         });
 
-    getAllUsers();
+          // Escuchar cambios en la colección "madre"
+    const unsubscribeMothers = listenToCollection("madre", (data, changes) => {
+      // setMothers(data);
+        //  console.log(data,'data');
+        //  console.log(allFader,'allFader');
+      changes.forEach( async (change) => {
+        if (change.type === "added") {
+          // Comparar la cantidad de madres actuales con los datos de Firestore
+          if (data.length > allFader?.length) {    /// aca indique si el valor de padres aumentado se muestra la 
+            showNotification("Nuevo padre agregado", "success");
+            setCountNotificatePadres(true); // Hay nuevos padres
+          }
+
+        }
+      });
+    });
+     
+             /*  FUNCION PARA PODER ESCUCHAR LOS CAMBIOS --- FINISH */
+             
+    
+    return()=>{
+      getAllUsers();
+      unsubscribeNannies();
+      unsubscribeMothers();
+      setIsInitialLoad(true);
+    }
   }, [reloadData, refesh]); // Escucha cambios en `reloadData`
 
   // Usar esta función para disparar la recarga de datos
@@ -179,15 +244,14 @@ function MatchUI() {
     setIsOpenModalURL(!isOpenModalURL)
   }
   
-  
-  
-
   ///  refesh
 
   function clickRefresh() {
     setRefesh(!refesh);
     // Inicia el giro al hacer clic
     setIsSpinning(true);
+
+    setCountNotificateNana(null)
 
     // Detiene el giro después de 1 segundo (simulando una acción, como un "refresh")
     setTimeout(() => {
@@ -198,6 +262,8 @@ function MatchUI() {
     setRefesh(!refesh);
     // Inicia el giro al hacer clic
     setIsSpinningMadre(true);
+
+    setCountNotificatePadres(null)
 
     // Detiene el giro después de 1 segundo (simulando una acción, como un "refresh")
     setTimeout(() => {
@@ -235,55 +301,10 @@ function MatchUI() {
         </div>
       )}
 
-      {/* ------------ Button Flotante ---------------------- */}
-
-
-      {/* Botón flotante */}
-      <button
-      className="fixed z-0 bottom-24 left-2 md:left-4 bg-white text-gray-400 rounded-full p-4 shadow-lg hover:bg-[#f9d8f3]"
-      onClick={toogleUrls}
-    >
-      Urls <SvgUrl/>
-    </button>
-
-{isOpenModalURL &&   <MediaManager onClose={toogleUrls} /> }
-     
-         <button
-         className="fixed z-0 bottom-24 right-2 md:right-4 bg-green-500 text-white rounded-full p-4 shadow-lg hover:bg-green-600"
-         onClick={toogleFaderMOdal}
-       >
-         Padres
-       </button>
-      {/* Modal de padres */}
-      <FaderModal
-        isOpen={isFaderModal}
-        onClose={toogleFaderMOdal}
-        /* mothers={mothers} */
-        mothers={allFader}
-        reload={reload}
-      />
-      
-      {/* Botón flotante */}
-      <button
-        className="fixed bottom-6 z-0 right-2 md:right-4 z bg-blue-500 text-white rounded-full p-4 shadow-lg hover:bg-blue-600"
-        onClick={toggleNannyModal}
-      >
-        Niñeras
-      </button>
-
-      {/* Modal de niñeras */}
-      <NannyModal
-        isOpen={isNannyModalOpen}
-        onClose={toggleNannyModal}
-        nannies={nannies}
-        reload={reload}
-      />
-      {/* ------------ Button Flotante ---------------------- ---------------------- */}
 
 
 
-
-      {/* ------------ Profesionales y Clientes ---------------------- ---------------------- */}
+      {/* ------------ All Niñeras and Padres ---------------------- ---------------------- */}
 
       <div className="flex gap-6 w-full sm:flex-row flex-col max-w-6xl">
      
@@ -291,6 +312,7 @@ function MatchUI() {
         <div className="flex-1 bg-white shadow rounded p-4">
           <div className="flex flex-row justify-between items-center mb-4">
             <h2 className="text-lg font-bold">Niñeras</h2>
+            <div className="flex flex-row justify-stretch"> 
             <button
               onClick={clickRefresh}
               className={`p-4 rounded-full transition-all duration-300 ${
@@ -301,7 +323,13 @@ function MatchUI() {
             >
               {/* Pasamos isSpinning al componente Refresh */}
               <Refresh typeUser={1} isSpinning={isSpinning} />
-            </button>
+            </button> 
+              {countNotificateNana ?
+                <p class="bg-gray-500 text-white px-1 h-8 rounded-full text-sm font-bold shadow-lg animate-bounce"><SvgCampana/></p>
+                : ''
+              }
+            </div>
+        
           </div>
 
           {/* Lista de Niñeras con Scroll */}
@@ -347,10 +375,12 @@ function MatchUI() {
           </ul>
         </div>
  
-          {/* Nuevo Srevicios  --------------------- ---------------------- -----------------------*/}
+          {/* Nuevo Srevicios  --------------------- PADRES    ---------------------- -----------------------*/}
           <div className="flex-1 bg-white shadow rounded p-4">
           <div className="flex flex-row justify-between mb-4">
             <h2 className="text-lg font-bold mb-4">Nuevo Servicios</h2>
+            <div className="flex flex-row justify-stretch"> 
+
             <button
               onClick={clickRefreshMadre}
               className={`p-4 rounded-full transition-all duration-300 ${
@@ -362,7 +392,14 @@ function MatchUI() {
               {/* Pasamos `isSpinning` al componente Refresh */}
               <RefreshMadre typeUser={2} isSpinningMadre={isSpinningMadre} />
             </button>
+            {countNotificatePadres ?
+                <p class="bg-gray-500 text-white px-1 h-8 rounded-full text-sm font-bold shadow-lg animate-bounce"><SvgCampana/></p>
+                : ''
+              }
+            </div>
+
           </div>
+
           <ul className="space-y-2 z-0 max-h-[300px] overflow-y-auto">
             {mothers.map((mother) => (
               <li
@@ -408,7 +445,7 @@ function MatchUI() {
 
 
 
-      {/* ------------ Zona de Matchs ----------------------  -------------------------------*/}
+      {/* ------------ Zone of Matchs ----------------------  -------------------------------*/}
 
       {/* Zona de Creación de Matches  --------------------- -----------------------*/}
       <div className="flex flex-col items-center mt-6 bg-gray-200 shadow rounded p-4 w-full max-w-4xl">
@@ -543,6 +580,59 @@ function MatchUI() {
       {/* Zona de Matches  ---------------------- ---------------------- ----------------------*/}
       {matches && <ZonaMatch matches={matches} setMatches={setMatches} />}
       {/* ------------ Zona de Matchs ---------------------- */}
+
+
+
+
+
+      {/* ------------ Button Flotante ---------------------- */}
+
+
+      {/* Botón flotante */}
+      <button
+      className="fixed z-0 bottom-24 left-2 md:left-4 bg-white text-gray-400 rounded-full p-4 shadow-lg hover:bg-[#f9d8f3]"
+      onClick={toogleUrls}
+    >
+      Urls <SvgUrl/>
+    </button>
+
+{isOpenModalURL &&   <MediaManager onClose={toogleUrls} /> }
+     
+         <button
+         className="fixed z-0 bottom-24 right-2 md:right-4 bg-green-500 text-white rounded-full p-4 shadow-lg hover:bg-green-600"
+         onClick={toogleFaderMOdal}
+       >
+         Padres
+       </button>
+      {/* Modal de padres */}
+      <FaderModal
+        isOpen={isFaderModal}
+        onClose={toogleFaderMOdal}
+        /* mothers={mothers} */
+        mothers={allFader}
+        reload={reload}
+      />
+      
+      {/* Botón flotante */}
+      <button
+        className="fixed bottom-6 z-0 right-2 md:right-4 z bg-blue-500 text-white rounded-full p-4 shadow-lg hover:bg-blue-600"
+        onClick={toggleNannyModal}
+      >
+        Niñeras
+      </button>
+
+      {/* Modal de niñeras */}
+      <NannyModal
+        isOpen={isNannyModalOpen}
+        onClose={toggleNannyModal}
+        nannies={nannies}
+        reload={reload}
+      />
+      {/* ------------ Button Flotante ---------------------- ---------------------- */}
+
+
+
+
     </div>
   );
 }

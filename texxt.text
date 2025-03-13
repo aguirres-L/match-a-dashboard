@@ -1,27 +1,18 @@
+trabajar con la escucha de las actualizaciones de db 
+
+1 - colocar una notificacion para nuevo padres  LISTO 
+2 - colocar una notificacion para nuevas niñeras  LISTO 
 
 
-
-All Niñeras   **********
-
-1 colocar un filter con respecto a los barrios, y tambien mejorar la ui ya que la ui nueva tendria que tener una divicion entre las niñeras activas y listas para trabajar separadas de las que estan 
-en pausa o fuera de servicio o no disponibles 
-
-La idea seria que el apartado de donde salen todas la niñeras se tenga un filtro por barrios, y que la ui sin uso de filtros este dividia en 2 una parte
-con las niñeras que ya estan lista para trabajar y las que todava no 
+3 - colocar una notificacion para nuevo servicios de niñera " estos los hacen los padres, tendria que ir salir desde services " 
 
 
+4 - poder colocar informacion sobre la entrevita de cada niñeras 
+    fecha de entrevista, si la entrevista gusto o no  , detalles de la entrevista. 
 
 
-Modal niñeras   **********  0000
-
-
-3 hacer la coneccion para añadir los nuevos datos que se van a crear en el componente para escribir
- detalle sobre la cita , fecha , datos de la niñera , si le gusto o no - aca podria colocar los emojis :) :(
-
-4 los datos de la entrevista se debe de guardar en la base de datos 
-
-5 en el modal de desplzado tendria qe colocar los emoji para poder indicar que estan bien o mal la seleccion de la niñeras
-
-
-
+platafomra niñeras ya 
+añadir los valores de interview para niñeras ya que desde esta platafomra es 
+de donde se deberia armar la estructura de dato de cada cliente, para depues solo 
+modificarlo o eliminarla en su defecto 
 

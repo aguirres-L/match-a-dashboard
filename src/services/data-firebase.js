@@ -1,6 +1,6 @@
 // Importar las funciones necesarias de Firebase
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, getDocs, doc, /* setDoc, */ updateDoc, deleteDoc, getDoc,   addDoc, setDoc } from "firebase/firestore"
+import { getFirestore, collection, getDocs, doc, /* setDoc, */onSnapshot, updateDoc, deleteDoc, getDoc,   addDoc, setDoc } from "firebase/firestore"
 import { query, where } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 // Configuración de Firebase
@@ -18,6 +18,36 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
+
+
+
+
+
+
+/* ******************** FUNCION PARA PODER ESCUCHAR LOS CAMBIOS DE LA BASE DE DATOS  *************************************** */
+/**
+ * Escucha cambios en una colección de Firestore.
+ * @param {string} collectionName - Nombre de la colección a escuchar.
+ * @param {function} callback - Función que se ejecuta cuando hay cambios.
+ * @returns {function} - Función para desuscribirse.
+ */
+export function listenToCollection(collectionName, callback) {
+  const colRef = collection(db, collectionName);
+
+  // Escuchar cambios en la colección
+  const unsubscribe = onSnapshot(colRef, (snapshot) => {
+    const data = snapshot.docs.map((doc) => ({
+      idFirestore: doc.id,
+      ...doc.data(),
+    }));
+    callback(data, snapshot.docChanges());
+  });
+
+  // Retornar la función para desuscribirse
+  return unsubscribe;
+}
+/* *********************************************************** */
+
 
 
 //

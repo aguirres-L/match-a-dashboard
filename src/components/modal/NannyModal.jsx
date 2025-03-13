@@ -415,7 +415,10 @@ Detalle de Niñera              </h2>
   >
    
 {/*    <ModalDesplazado typeModal={'feedback'} setShowModal={setShowModal} /> */}
-   <ModalDesplazado typeModal={'entrevistas'} setShowModal={setShowModal} />
+   <ModalDesplazado typeModal={'entrevistas'} setShowModal={setShowModal} 
+                        selectedNanny={selectedNanny}
+   
+   />
    
   </div>
 </div>

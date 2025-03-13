@@ -3,7 +3,7 @@ import SvgCloseX from "../svg/SvgCloseX";
 import SvgHappy from "../svg/SvgHappy";
 // Verifica si selectedMother y sus propiedades están definidas
 
-export default function ModalDesplazado({ typeModal, setShowModal, selectedMother }) {
+export default function ModalDesplazado({ typeModal, setShowModal, selectedMother ,selectedNanny }) {
   //const hasServices = selectedMother?.services?.length > 0;
  // const hasChats = hasServices && selectedMother.services[0]?.chats?.length > 0;
 
@@ -14,7 +14,7 @@ export default function ModalDesplazado({ typeModal, setShowModal, selectedMothe
   }
 /*   console.log(selectedMother.services[0]?.chats,'dato from modalDesplazado');
    */
-
+if(selectedNanny) console.log(selectedNanny,'selectedNanny from modal desplazado ')
   return (
     <>
       {typeModal === 'entrevistas' ? (

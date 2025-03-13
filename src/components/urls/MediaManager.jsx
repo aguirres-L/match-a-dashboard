@@ -134,7 +134,6 @@ const MediaManager = ({ onClose }) => {
               <ul className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {sliderImages.map((image, index) => (
                   <li key={index} className="relative">
-                    {console.log(image,'imageimage')}
                     <img
                       src={ image.url}
                       alt={`Slider ${index + 1}`}

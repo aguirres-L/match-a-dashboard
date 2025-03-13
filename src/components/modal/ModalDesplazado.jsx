@@ -1,24 +1,48 @@
+import { useState } from "react";
 import SvgBad from "../svg/SvgBad";
 import SvgCloseX from "../svg/SvgCloseX";
 import SvgHappy from "../svg/SvgHappy";
+import { updateDocumentFirebase } from "../../services/data-firebase";
 // Verifica si selectedMother y sus propiedades están definidas
 
 export default function ModalDesplazado({ typeModal, setShowModal, selectedMother ,selectedNanny }) {
   //const hasServices = selectedMother?.services?.length > 0;
  // const hasChats = hasServices && selectedMother.services[0]?.chats?.length > 0;
 
-  const saveDateOfEntrevista =()=>{
-    alert('tengo que gardar los datos de la entrevista en firebase')
-    setShowModal(false)
+ const [interviewDate, setInterviewDate] = useState("");
+ const [interviewResult, setInterviewResult] = useState("");
+ const [interviewNotes, setInterviewNotes] = useState("");
 
-  }
+ const saveDateOfEntrevista = async () => {
+   if (!selectedNanny || !selectedNanny.idFirestore) {
+     alert("No se ha seleccionado una niñera válida.");
+     return;
+   }
+
+   const updatedInterview = {
+     state: interviewResult === "liked",
+     detail: interviewNotes,
+     fecha: interviewDate,
+   };
+
+   try {
+     await updateDocumentFirebase("nana", selectedNanny.idFirestore, {
+       interview: updatedInterview,
+     });
+     alert("Entrevista guardada exitosamente.");
+     setShowModal(false);
+   } catch (error) {
+     console.error("Error al guardar la entrevista:", error);
+     alert("Hubo un error al guardar la entrevista.");
+   }
+ };
 /*   console.log(selectedMother.services[0]?.chats,'dato from modalDesplazado');
    */
-if(selectedNanny) console.log(selectedNanny,'selectedNanny from modal desplazado ')
+if(selectedNanny) console.log(selectedNanny.interview,'selectedNanny from modal desplazado ')
   return (
     <>
       {typeModal === 'entrevistas' ? (
-        <div className="p-6 text-gray-100">
+        <div className="p-4  text-gray-100">
           {/* Contenido del modal de entrevistas */}
           <div className="flex flex-row justify-between items-center">
             <h2 className="text-2xl font-bold">Detalles de la Entrevista</h2>
@@ -38,6 +62,8 @@ if(selectedNanny) console.log(selectedNanny,'selectedNanny from modal desplazado
             <label className="block text-sm font-semibold mb-1">Fecha de la Entrevista</label>
             <input
               type="date"
+             value={interviewDate}
+              onChange={(e) => setInterviewDate(e.target.value)}
               className="w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-900 focus:ring-2 focus:ring-[#f83dd6] focus:outline-none transition duration-300 ease-in-out shadow-sm hover:shadow-md"
             />
           </div>
@@ -52,6 +78,10 @@ if(selectedNanny) console.log(selectedNanny,'selectedNanny from modal desplazado
                   name="interviewResult"
                   value="liked"
                   className="h-4 w-4 text-green-500 focus:ring-green-400"
+
+                  checked={interviewResult === "liked"}
+                  onChange={() => setInterviewResult("liked")}
+
                 />
              <SvgHappy/>
 
@@ -63,6 +93,10 @@ if(selectedNanny) console.log(selectedNanny,'selectedNanny from modal desplazado
                   type="radio"
                   name="interviewResult"
                   value="notLiked"
+
+                  checked={interviewResult === "notLiked"}
+                  onChange={() => setInterviewResult("notLiked")}
+
                   className="h-4 w-4 text-red-500 focus:ring-red-400"
                 />
            <SvgBad/> 
@@ -76,6 +110,8 @@ if(selectedNanny) console.log(selectedNanny,'selectedNanny from modal desplazado
             <label className="block text-sm font-semibold mb-1">Notas Adicionales</label>
             <textarea
               rows={5}
+              value={interviewNotes}
+              onChange={(e) => setInterviewNotes(e.target.value)}
               className="w-full h-[50vh] px-4 py-3 rounded-lg border text-gray-950 border-gray-300 focus:ring-2 focus:ring-[#f83dd6] focus:outline-none transition duration-300 ease-in-out shadow-sm hover:shadow-md resize-none"
               placeholder="Escribe notas sobre la entrevista aquí..."
             ></textarea>

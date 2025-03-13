@@ -1,4 +1,4 @@
-trabajar con la escucha de las actualizaciones de db 
+2 1Ztrabajar con la escucha de las actualizaciones de db 
 
 1 - colocar una notificacion para nuevo padres  LISTO 
 2 - colocar una notificacion para nuevas niñeras  LISTO 
@@ -12,7 +12,8 @@ trabajar con la escucha de las actualizaciones de db
 
 
 platafomra niñeras ya 
-añadir los valores de interview para niñeras ya que desde esta platafomra es 
+1 añadir los valores de interview para niñeras ya que desde esta platafomra es 
 de donde se deberia armar la estructura de dato de cada cliente, para depues solo 
 modificarlo o eliminarla en su defecto 
 
+2 colocar un buen spiner para el slider cuadno este cargando las img 

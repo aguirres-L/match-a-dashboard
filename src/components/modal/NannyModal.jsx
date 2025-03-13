@@ -60,7 +60,7 @@ export default function NannyModal({ isOpen, onClose, nannies, reload }) {
       className="bg-white rounded-lg shadow-xl z-50 max-w-2xl w-full p-6 overflow-hidden transform transition-transform"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
     >
-      <div className={`max-h-[80vh] mb-6 mt-5 ${!showModal?'overflow-y-auto':''}`}> {/* Controlo el scroll del modal principal */}
+      <div className={`max-h-[85vh] mb-6 mt-5 ${!showModal?'overflow-y-auto':''}`}> {/* Controlo el scroll del modal principal */}
         {!selectedNanny ? (
           <div>
      <div className="flex flex-row justify-between items-center p-4 border-b border-gray-200">
@@ -409,7 +409,7 @@ Detalle de Niñera              </h2>
       
   {/* Modal desplazado */}    {/* ------------------------------------  implementar los nuevos datos al formulario de niñera */}
   <div
-    className={`absolute top-0 right-0 w-full sm:w-2/2 h-[60%] bg-[#381c38e0] shadow-xl transform transition-transform duration-300 ${
+    className={`absolute top-0 right-0 w-full sm:w-2/2 h-[60%] rounded-lg bg-[#381c38e0] shadow-xl transform transition-transform duration-300 ${
       showModal ? "translate-x-0" : "translate-x-full"
     }`}
   >

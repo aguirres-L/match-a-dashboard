@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SvgBad from "../svg/SvgBad";
 import SvgCloseX from "../svg/SvgCloseX";
 import SvgHappy from "../svg/SvgHappy";
@@ -12,6 +12,17 @@ export default function ModalDesplazado({ typeModal, setShowModal, selectedMothe
  const [interviewDate, setInterviewDate] = useState("");
  const [interviewResult, setInterviewResult] = useState("");
  const [interviewNotes, setInterviewNotes] = useState("");
+
+  // Inicializa los estados con los valores de selectedNanny.interview
+  useEffect(() => {
+    if (selectedNanny?.interview) {
+      setInterviewDate(selectedNanny.interview.fecha || "");
+      setInterviewResult(selectedNanny.interview.state ? "liked" : "notLiked");
+      setInterviewNotes(selectedNanny.interview.detail || "");
+    }
+  }, [selectedNanny]); // Se ejecuta cuando selectedNanny cambia
+
+
 
  const saveDateOfEntrevista = async () => {
    if (!selectedNanny || !selectedNanny.idFirestore) {
@@ -38,7 +49,6 @@ export default function ModalDesplazado({ typeModal, setShowModal, selectedMothe
  };
 /*   console.log(selectedMother.services[0]?.chats,'dato from modalDesplazado');
    */
-if(selectedNanny) console.log(selectedNanny.interview,'selectedNanny from modal desplazado ')
   return (
     <>
       {typeModal === 'entrevistas' ? (

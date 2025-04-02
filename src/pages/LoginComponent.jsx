@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { motion } from "framer-motion"; // Import framer-motion
 import { getDocumentsFirebase } from "../services/data-firebase";
 import logoNiñeraYa from "../assets/logo-niñeras-ya.JPG";
 
@@ -43,13 +44,26 @@ const LoginComponent = ({ setIsUserVerification }) => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-[#f9d6ec] to-[#f0b3d9]">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-96 transform transition-all duration-300 hover:shadow-2xl">
+      <motion.div
+        className="bg-white p-8 rounded-lg shadow-lg w-96 transform transition-all duration-300 hover:shadow-2xl"
+        initial={{ opacity: 0, scale: 0.4 }} // Initial animation state
+        animate={{ opacity: 1, scale: 1 }} // Final animation state
+        transition={{ duration: 0.8 }} // Animation duration
+      >
         {/* Logo y Título */}
         <div className="flex flex-col items-center mb-6">
-          <img
+          <motion.img
             src={logoNiñeraYa}
             className="w-24 h-24 rounded-full shadow-md border-4 border-[#e085cf]"
             alt="Niñeras-YA"
+            initial={{ rotate: -180 }} // Initial rotation
+            animate={{ rotate: 0 }} // Final rotation
+            transition={{
+              duration: 0.8,
+              type: "spring",
+              stiffness: 100,
+              delay: 0.5, // Delay to start after container animation
+            }}
           />
           <h1 className="text-3xl font-bold mt-4">
             <span className="text-[#e085cf]">Niñeras-YA!</span>{" "}
@@ -105,9 +119,9 @@ const LoginComponent = ({ setIsUserVerification }) => {
             Iniciar Sesión
           </button>
         </form>
-      </div>
+      </motion.div>
     </div>
   );
 };
 
-export default LoginComponent;  
+export default LoginComponent;

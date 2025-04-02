@@ -1,0 +1,62 @@
+color #D98CCA "rosa" 
+
+
+ bg-[ #e896ef]
+
+  hover:bg-[ #eec7e9]
+ 
+ librerias tailwind react-icons framer-motion 
+
+  update 
+
+1
+ui niñeras membre 
+    colocar la fecha del servicio en el calendario, tendria que tener un color distitno a las otras fecha de los match comun, ya que este match es de user type membre 
+        implemente colocar 2 tipos de calendario 1 para los servicios comunes y otro para los servicios de tipo membrecia 
+
+    hacer uso del escuha de firebase para detectar cambios en la collection y poder identifcar si hay nuevos servicos en la collection de match-sub con el usario de la niñea que pago la membre
+
+    coloar la fecha de creacion de los usarios, para dar un poco mas de confianza, osea colocar la fecha de creacion del padre y de la niñera y que esta date se vea reflejada en las 2 ui 
+
+
+
+2  formulario para niñera 
+    este tendria que tener un apartado para que puede colocar el barrio de donde es "ya que ahora hay barrios por default"
+    y colocar para que añada la "zona" ya que de esta forma el padre podria indicar de que 
+    parte quiere que sea 
+
+
+3  formulario para padre 
+    colocar una opcion para que pueda añadir otro barrio, ya que en la seleccion de barrios pueden 
+    falta uno que otro barrio 
+
+4 formulario para solicitar una niñera 
+    -colocar que rango de edad quieren que sea la niñera 
+    -colocar apartado para que indiquen como seria la niñera que estan buscando , que la describan en pocas palabaras 
+    -colocar apartado para que indiquen lo que no aceptarian de la niñera ej: llegada tarde 
+    -colocar si prefieren con vehiculo propio - bus - si tiene algun chofer "familiar - pareja " 
+    -añadir un apartado para que selecionen el tipo de plan que quieren usar " ver donde colocarlo , ya que
+      puede que no se entiendan los tipo de planes,
+        1 crear una ui que muestre el detalle de los planes, podriamos colocar cartas con un slider 
+        2 o colocar el tipo de plan ya cuadno el servicio esta por concretar , podria ser antes de 
+        que muestre el detalle del servicio que se solicita 
+    -colocar el detalle de las tareas que tendria que cumplir 
+
+
+
+
+///   nana-manager 
+    poder filtrar las niñeras por "barrios - zonas - movilidad - nivel academico " 
+    esto tendria que modificar el formulario de la niñera ya que tendria que tener el nivel
+    academico como valores estandares como primario - secundari - tercario - universitario - tecnicatura 
+
+    colocar un apartado para poder transfomrar a niñeras y padres en usarios subscriptos
+
+
+
+
+//  web nana-ya 
+    colocar un apartado para dar un poco mas de informacion sobre los planes con lo que trabaja niñeras ya 
+    [- tendria que actualizar la ui de manager para que se pueden modificar los planes ]
+
+    ** ya tengo la ui en la web de niñeras ya con el detalle de los servicios, tendria que adpatar el manager para que puedan modificar estos valores 

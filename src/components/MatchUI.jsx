@@ -50,6 +50,44 @@ function MatchUI() {
     const [isInitialLoad, setIsInitialLoad] = useState(true);
 
 
+
+// state for filter
+const [filter, setFilter] = useState({
+  zone: '',
+  mobility: '',
+  ageRange: ''
+});
+
+//const ZONAS = ["Zona Norte", "Zona Sur", "Zona Este", "Zona Oeste", "Centro"];
+//const MOVILIDADES = ["auto", "moto", "transporte", "bicicleta"];
+// Filtrar niñeras según el estado y los filtros aplicados
+
+const filteredNannies = nannies.filter(nanny => {
+  // Filtro por zona
+  if (filter.zone && !nanny.barrioZona?.includes(filter.zone)) {
+    return false;
+  }
+  
+  // Filtro por movilidad
+  if (filter.mobility && nanny.mobility !== filter.mobility) {
+    return false;
+  }
+  
+  // Filtro por edad (si implementas este campo)
+  // if (filter.ageRange) {
+  //   const age = calcularEdad(nanny.fechaNacimiento); // Necesitarías esta función
+  //   const [min, max] = filter.ageRange.split('-').map(Number);
+  //   if (max) {
+  //     if (age < min || age > max) return false;
+  //   } else {
+  //     if (age < min) return false;
+  //   }
+  // }
+  
+  return true;
+});
+
+
   // hook isWeb
   let isSeeWeb = useIsWeb();
   /* console.log(isSeeWeb,'isWeb ?'); */
@@ -87,8 +125,8 @@ function MatchUI() {
          const unsubscribeNannies =  listenToCollection("nana", (data, changes) => {
           // setNannies(data);
       //    console.log(data,'from useEffecto in NANA reaction from cluod firestore')
+      changes.forEach((change) => {
            // Mostrar notificaciones si hay cambios
-           changes.forEach((change) => {
             if (change.type === "added") {
               // Ignorar cambios durante la carga inicial
               if (isInitialLoad) {
@@ -272,6 +310,7 @@ function MatchUI() {
   }
   
   
+  console.log(nannies,'niñeras');
 
   return (
     <div/*  style={{border:"solid 2px red"}} */ className="flex  flex-col items-center bg-gray-100 min-h-screen p-6">
@@ -308,73 +347,137 @@ function MatchUI() {
 
       <div className="flex gap-6 w-full sm:flex-row flex-col max-w-6xl">
      
-        {/* Niñeras  ----------------------*/}
-        <div className="flex-1 bg-white shadow rounded p-4">
-          <div className="flex flex-row justify-between items-center mb-4">
-            <h2 className="text-lg font-bold">Niñeras</h2>
-            <div className="flex flex-row justify-stretch"> 
-            <button
-              onClick={clickRefresh}
-              className={`p-4 rounded-full transition-all duration-300 ${
-                isSpinning
-                  ? "bg-blue-200 hover:bg-blue-300"
-                  : "bg-gray-200 hover:bg-gray-300"
-              } focus:outline-none active:scale-95`}
-            >
-              {/* Pasamos isSpinning al componente Refresh */}
-              <Refresh typeUser={1} isSpinning={isSpinning} />
-            </button> 
-              {countNotificateNana ?
-                <p class="bg-gray-500 text-white px-1 h-8 rounded-full text-sm font-bold shadow-lg animate-bounce"><SvgCampana/></p>
-                : ''
-              }
-            </div>
-        
-          </div>
+{/* Niñeras  ----------------------*/}
+<div className="flex-1 bg-white shadow rounded p-4">
+  <div className="flex flex-row justify-between items-center mb-4">
+    <h2 className="text-lg font-bold">Niñeras</h2>
+    <div className="flex flex-row justify-stretch"> 
+      <button
+        onClick={clickRefresh}
+        className={`p-4 rounded-full transition-all duration-300 ${
+          isSpinning
+            ? "bg-blue-200 hover:bg-blue-300"
+            : "bg-gray-200 hover:bg-gray-300"
+        } focus:outline-none active:scale-95`}
+      >
+        <Refresh typeUser={1} isSpinning={isSpinning} />
+      </button> 
+      {countNotificateNana ?
+        <p class="bg-gray-500 text-white px-1 h-8 rounded-full text-sm font-bold shadow-lg animate-bounce"><SvgCampana/></p>
+        : ''
+      }
+    </div>
+  </div>
 
-          {/* Lista de Niñeras con Scroll */}
-          <ul className="space-y-2 max-h-[300px] overflow-y-auto pr-2">
-            {nannies.map((nanny) => (
-              <li
-                key={nanny.idFirestore}
-                className={`p-3 rounded cursor-pointer ${
-                  nanny.state === true
-                    ? "bg-blue-100 hover:bg-blue-200"
-                    : "bg-gray-300 cursor-not-allowed"
-                }`}
-                draggable={nanny.state === true} // Solo hacerlas "draggable" si `state` es true
-                onDragStart={
-                  nanny.state === true
-                    ? (event) => onDragStart(event, nanny, "nanny")
-                    : (event) => {
-                        event.preventDefault(); // Evita el arrastre
-                        showNotification(
-                          "Esta niñera no está disponible para hacer un match",
-                          "error"
-                        );
-                      }
-                }
-              >
-                <div 
-                
-                onClick={()=> console.log(nanny,'nanyy')}
-                className="flex flex-row justify-between">
-                  <p className="font-bold">{nanny.name}</p>
-                  <p
-                    className={`text-xs font-bold ${
-                      nanny.state ? "text-green-500" : "text-red-500"
-                    }`}
-                  >
-                    {nanny.state ? "" : "No Disponible"}
-                  </p>
-                </div>
-                <p className="text-sm">{nanny.address}</p>
-                <p className="text-sm">{nanny.neighborhood}</p>
-              </li>
-            ))}
-          </ul>
+  {/* Filtros */}
+  <div className="flex flex-wrap gap-3 mb-2"> {/* Reducido el margin-bottom a mb-2 */}
+    {/* Filtro por Zona */}
+    <div className="flex-1 min-w-[150px]">
+      <label className="block text-sm font-medium text-gray-700 mb-1">Zona</label>
+      <select 
+        className="w-full p-2 border border-gray-300 rounded-md"
+        onChange={(e) => setFilter({...filter, zone: e.target.value})}
+        value={filter.zone}
+      >
+        <option value="">Todas las zonas</option>
+        <option value="Zona Norte">Zona Norte</option>
+        <option value="Zona Sur">Zona Sur</option>
+        <option value="Zona Este">Zona Este</option>
+        <option value="Zona Oeste">Zona Oeste</option>
+        <option value="Centro">Centro</option>
+      </select>
+    </div>
+
+    {/* Filtro por Movilidad */}
+    <div className="flex-1 min-w-[150px]">
+      <label className="block text-sm font-medium text-gray-700 mb-1">Movilidad</label>
+      <select 
+        className="w-full p-2 border border-gray-300 rounded-md"
+        onChange={(e) => setFilter({...filter, mobility: e.target.value})}
+        value={filter.mobility}
+      >
+        <option value="">Cualquier movilidad</option>
+        <option value="auto">Auto propio</option>
+        <option value="moto">Moto</option>
+        <option value="transporte">Transporte público</option>
+        <option value="bicicleta">Bicicleta</option>
+      </select>
+    </div>
+
+    {/* Filtro por Edad */}
+    <div className="flex-1 min-w-[150px]">
+      <label className="block text-sm font-medium text-gray-700 mb-1">Edad</label>
+      <select 
+        className="w-full p-2 border border-gray-300 rounded-md"
+        onChange={(e) => setFilter({...filter, ageRange: e.target.value})}
+        value={filter.ageRange}
+      >
+        <option value="">Cualquier edad</option>
+        <option value="18-25">18-25 años</option>
+        <option value="26-35">26-35 años</option>
+        <option value="36-45">36-45 años</option>
+        <option value="45+">45+ años</option>
+      </select>
+    </div>
+  </div>
+
+  {/* Contador y botón Limpiar filtros */}
+  <div className="flex justify-between items-center mb-3">
+    <div className="text-sm text-gray-500">
+      Mostrando {filteredNannies.length} de {nannies.length} niñeras
+    </div>
+    {(filter.zone || filter.mobility || filter.ageRange) && (
+      <button 
+        onClick={() => setFilter({zone: '', mobility: '', ageRange: ''})}
+        className="text-sm text-blue-500 hover:text-blue-700 underline"
+      >
+        Limpiar filtros
+      </button>
+    )}
+  </div>
+
+  {/* Lista de Niñeras con Scroll */}
+  <ul className="space-y-2 max-h-[300px] overflow-y-auto pr-2">
+    {filteredNannies.map((nanny) => (
+      <li
+        key={nanny.idFirestore}
+        className={`p-3 rounded cursor-pointer ${
+          nanny.state === true
+            ? "bg-blue-100 hover:bg-blue-200"
+            : "bg-gray-300 cursor-not-allowed"
+        }`}
+        draggable={nanny.state === true}
+        onDragStart={
+          nanny.state === true
+            ? (event) => onDragStart(event, nanny, "nanny")
+            : (event) => {
+                event.preventDefault();
+                showNotification(
+                  "Esta niñera no está disponible para hacer un match",
+                  "error"
+                );
+              }
+        }
+      >
+        <div 
+          onClick={()=> console.log(nanny,'nanyy')}
+          className="flex flex-row justify-between"
+        >
+          <p className="font-bold">{nanny.name}</p>
+          <p
+            className={`text-xs font-bold ${
+              nanny.state ? "text-green-500" : "text-red-500"
+            }`}
+          >
+            {nanny.state ? "" : "No Disponible"}
+          </p>
         </div>
- 
+        <p className="text-sm">{nanny.address}</p>
+        <p className="text-sm">{nanny.neighborhood}</p>
+      </li>
+    ))}
+  </ul>
+</div>
           {/* Nuevo Srevicios  --------------------- PADRES    ---------------------- -----------------------*/}
           <div className="flex-1 bg-white shadow rounded p-4">
           <div className="flex flex-row justify-between mb-4">
@@ -425,14 +528,33 @@ function MatchUI() {
                   {/*     {console.log(mother.services[0]?.schedule,'tipo ')} */}
                 </p>
                 <p className="text-sm text-gray-600">
-                  <span className="font-medium">Plan:</span>{" "}
+                  <span className="font-medium">Servicio:</span>{" "}
                   {mother.services[0]?.plan || "No especificado"}
                 </p>
                 <p className="text-sm text-gray-600">
                   <span className="font-medium">Días:</span>{" "}
                   {mother.services[0]?.days?.join(" ") || "No especificado"}
                 </p>
-              </li>
+
+                  <p>
+                    Detalles del servicio:
+                    <ul className="list-disc ml-4 text-sm text-gray-600 max-h-40 overflow-y-auto">
+                      {mother.services?.map((detail, index) => (
+                        <li key={index} className="flex flex-wrap items-center gap-2">
+                          <span className="mr-2">• Contratación: {detail.contratacion}</span>
+                          <span className="mr-2">• Niñera Ideal: {detail.niñeraIdeal}</span>
+                          <span className="mr-2">• {detail.barrioZona[0]}</span>
+                          <span className="mr-2">• Tipo de Plan: {detail.tipoPlan}</span>
+                          <span className="mr-2">• Tipo de Pago: {detail.typePago}</span>
+                          <span className="mr-2">• Propuesta: ${detail.propuestaEconomica}</span>
+                          <span className="mr-2">• Rango de Edad: {detail.rangoDeEdadNiñera}</span>
+                          <span className="mr-2">• Método de Transporte: {detail.metodoTransporte}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </p>
+
+                </li>
             ))}
           </ul>
         </div>

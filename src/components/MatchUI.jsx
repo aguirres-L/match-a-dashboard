@@ -58,10 +58,7 @@ const [filter, setFilter] = useState({
   ageRange: ''
 });
 
-//const ZONAS = ["Zona Norte", "Zona Sur", "Zona Este", "Zona Oeste", "Centro"];
-//const MOVILIDADES = ["auto", "moto", "transporte", "bicicleta"];
-// Filtrar niñeras según el estado y los filtros aplicados
-
+// Filter nannies based on the selected filters
 const filteredNannies = nannies.filter(nanny => {
   // Filtro por zona
   if (filter.zone && !nanny.barrioZona?.includes(filter.zone)) {
@@ -73,16 +70,16 @@ const filteredNannies = nannies.filter(nanny => {
     return false;
   }
   
-  // Filtro por edad (si implementas este campo)
-  // if (filter.ageRange) {
-  //   const age = calcularEdad(nanny.fechaNacimiento); // Necesitarías esta función
-  //   const [min, max] = filter.ageRange.split('-').map(Number);
-  //   if (max) {
-  //     if (age < min || age > max) return false;
-  //   } else {
-  //     if (age < min) return false;
-  //   }
-  // }
+  // Filtro por edad
+  if (filter.ageRange) {
+    const age = nanny.age; // Use nanny.age directly
+    const [min, max] = filter.ageRange.split('-').map(Number);
+    if (max) {
+      if (age < min || age > max) return false;
+    } else {
+      if (age < min) return false;
+    }
+  }
   
   return true;
 });
@@ -471,6 +468,16 @@ const filteredNannies = nannies.filter(nanny => {
           >
             {nanny.state ? "" : "No Disponible"}
           </p>
+
+          <p
+            className={`text-xs font-bold ${
+              nanny.subs ? "text-green-500" : "text-red-500"
+            }`}
+          >
+            {nanny.subs ? "subcripto" : "No Sub"}
+          </p>
+
+
         </div>
         <p className="text-sm">{nanny.address}</p>
         <p className="text-sm">{nanny.neighborhood}</p>

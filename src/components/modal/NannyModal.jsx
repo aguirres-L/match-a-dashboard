@@ -114,6 +114,7 @@ export default function NannyModal({ isOpen, onClose, nannies, reload }) {
       showModal ? "-translate-x-1" : ""
     }`}
   >
+    {console.log("selectedNanny", selectedNanny)}
           
           <div className="flex flex-row justify-between items-center p-4 border-b border-gray-200">
               <h2 className="text-2xl font-semibold text-gray-800">
@@ -146,76 +147,88 @@ Detalle de Niñera              </h2>
                 </button>
               </div>
 
-              {/* Nombre */}
-              <div className="group relative">
+              <div className="flex flex-row gap-4">
+                {/* Nombre */}
+                <div className="flex-1">
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">
+                    Nombre
+                  </label>
+                  <input
+                    type="text"
+                    value={selectedNanny.name}
+                    onChange={(e) =>
+                      setSelectedNanny({ ...selectedNanny, name: e.target.value })
+                    }
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-300 ease-in-out shadow-sm hover:shadow-md"
+                    placeholder="Introduce el nombre"
+                  />
+                </div>
+
+                {/* Edad */}
+                <div className="flex-1">
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">
+                    Edad
+                  </label>
+                  <input
+                    type="text"
+                    value={selectedNanny.age}
+                    onChange={(e) =>
+                      setSelectedNanny({ ...selectedNanny, age: e.target.value })
+                    }
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-300 ease-in-out shadow-sm hover:shadow-md"
+                    placeholder="Introduce la edad"
+                  />
+                </div>
+              </div>
+
+                {/* email */}
+                <div className="group relative">
                 <label className="block text-sm font-semibold text-gray-700 mb-1">
-                  Nombre
+                  Email
                 </label>
                 <input
                   type="text"
-                  value={selectedNanny.name}
+                  value={selectedNanny.email}
                   onChange={(e) =>
-                    setSelectedNanny({ ...selectedNanny, name: e.target.value })
+                    setSelectedNanny({ ...selectedNanny, email: e.target.value })
                   }
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-300 ease-in-out shadow-sm hover:shadow-md group-hover:ring-blue-500"
                   placeholder="Introduce el nombre"
                 />
               </div>
 
-                 {/* CV */}
-              
-                 <div className="group relative">
-                      {selectedNanny.cv
-                        ? (
-                          <a
-                            href={selectedNanny.cv}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-500 hover:underline"
-                          >
-                            Ver CV  <SvgCV />
-                          </a>
-                        )
-                        : 'No hay CV'}
-                    </div>
-
-              <div className="flex flex-row gap-4">
+              <div className="flex flex-row gap-4 items-center">
                 {/* Telefono */}
-                <div className="group relative flex-1">
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">
-                    Telefono
-                  </label>
-                  <input
-                    type="text"
-                    value={selectedNanny.phone}
-                    onChange={(e) =>
-                      setSelectedNanny({
-                        ...selectedNanny,
-                        phone: e.target.value,
-                      })
-                    }
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-300 ease-in-out shadow-sm hover:shadow-md group-hover:ring-blue-500"
-                    placeholder="Introduce Telefono"
-                  />
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm text-gray-700">{selectedNanny.phone}</span>
                 </div>
 
                 {/* WhatsApp */}
-                <div className="group relative  flex-1">
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">
-                    WhatsApp
-                  </label>
+                <div className="flex items-center space-x-2">
                   <a
-                    href={generateWhatsAppLink(
-                      selectedNanny.name,
-                      selectedNanny.phone
-                    )}
+                    href={generateWhatsAppLink(selectedNanny.name, selectedNanny.phone)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-green-500 hover:text-green-700 flex items-center space-x-2"
                   >
                     <SvgWpp />
-                  {/*   <span>Abrir Chat</span> */}
                   </a>
+                </div>
+
+                {/* CV */}
+                <div className="flex items-center space-x-2">
+                  {selectedNanny.cv ? (
+                    <a
+                      href={selectedNanny.cv}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-500 hover:underline flex items-center space-x-2"
+                    >
+                      Ver CV <SvgCV />
+                    </a>
+                  ) : (
+                    <span className="text-sm text-gray-500">No hay CV</span>
+                  )}
                 </div>
               </div>
 
@@ -368,8 +381,36 @@ Detalle de Niñera              </h2>
                 />
               </div>
 
-           
-            
+              {/* Subscripción */}
+              <div className="group relative">
+                <label className="block text-sm font-semibold text-gray-700 mb-1">
+                  Subscripción
+                </label>
+                <div className="flex items-center space-x-4">
+                  <p
+                    className={`text-lg font-medium ${
+                      selectedNanny.subs ? "text-green-600" : "text-red-600"
+                    }`}
+                  >
+                    {selectedNanny.subs ? "Activa" : "Inactiva"}
+                  </p>
+                  <button
+                    onClick={() =>
+                      setSelectedNanny((prevNanny) => ({
+                        ...prevNanny,
+                        subs: prevNanny.subs ? null : true,
+                      }))
+                    }
+                    className={`px-4 py-2 font-semibold rounded-lg shadow-md transition-all duration-300 ${
+                      selectedNanny.subs
+                        ? "bg-red-500 text-white hover:bg-red-600 focus:ring-4 focus:ring-red-300"
+                        : "bg-blue-500 text-white hover:bg-blue-600 focus:ring-4 focus:ring-blue-300"
+                    }`}
+                  >
+                    {selectedNanny.subs ? "Desactivar Subscripción" : "Activar Subscripción"}
+                  </button>
+                </div>
+              </div>
 
               {/* Estado */}
               <div className="flex items-center justify-between bg-gray-50 p-4 rounded-lg shadow-sm ring-1 ring-gray-200">

@@ -17,3 +17,41 @@ de donde se deberia armar la estructura de dato de cada cliente, para depues sol
 modificarlo o eliminarla en su defecto 
 
 2 colocar un buen spiner para el slider cuadno este cargando las img 
+
+
+ 🛠️ modificar los valores que se muestra en manager con respecto a los nuevos valores de los padres, ya que estos valores son los que le 
+    tendria que usar manager parapor filtrar las niñeras con respecto a los pedidos de los padres 
+
+///   nana-manager  ---- 👀
+🛠️    poder filtrar las niñeras por "barrios - zonas - movilidad - nivel academico " 
+      esto tendria que modificar el formulario de la niñera ya que tendria que tener el nivel
+      academico como valores estandares como primario - secundari - tercario - universitario - tecnicatura 
+
+🛠️    colocar un apartado para poder transfomrar a niñeras y padres en usarios subscriptos
+
+🛠️  poder mostrar los valores nuevos actualizados
+
+
+//  web nana-ya --- 👀
+🛠️    colocar un apartado para dar un poco mas de informacion sobre los planes con lo que trabaja niñeras ya 
+      [- tendria que actualizar la ui de manager para que se pueden modificar los planes ]
+
+     ** ya tengo la ui en la web de niñeras ya con el detalle de los servicios, tendria que adpatar el manager para que puedan modificar estos valores 
+    
+
+🛠️
+    // ui Padres al momento de crear una nueva solictud de niñeras ver como hacer para que se recargue los datos 
+    ya que me gustarai incluso hasta usar los carteles de alerta para indicar que se solicito una 
+    niñera expres 
+    
+
+
+
+
+
+    ---**---  
+    modificar el apartado de match creado para que me muestre todo la informacion necesaria, "la nueva info que e añadido"
+    al igual que en el apartado de padres-servicios
+
+    colocar en el formulario de la niñeras la edad ya que el apartado de match hay un filtro para buscar por edad 
+    

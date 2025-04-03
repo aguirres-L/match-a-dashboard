@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import SvgCloseX from "../svg/SvgCloseX";
 import { addDocumentFirebase, deleteDocumentFirebase, getDocumentsFirebase } from "../../services/data-firebase";
 import SvgInstagram from "../svg/SvgInstagram";
@@ -12,84 +13,89 @@ const MediaManager = ({ onClose }) => {
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
 
-
-  useEffect(()=>{
-
-    const getAllUrls= async ()=>{
+  useEffect(() => {
+    const getAllUrls = async () => {
       try {
-        let urlRell = await getDocumentsFirebase('url-reel')
-        let urllSlider = await getDocumentsFirebase('url-slider')
+        let urlRell = await getDocumentsFirebase("url-reel");
+        let urllSlider = await getDocumentsFirebase("url-slider");
 
-        setReels(urlRell)
-        setSliderImages(urllSlider)
+        setReels(urlRell);
+        setSliderImages(urllSlider);
       } catch (error) {
-        console.error(error,'error get all url from firebase')
+        console.error(error, "error get all url from firebase");
       }
-    }
+    };
     getAllUrls();
+  }, []);
 
-  },[])
+  console.log(reels, sliderImages, "url from slider ande reels form instagram from firebase");
 
-
-  console.log(reels, sliderImages, 'url from slider ande reels form instagram from firebase');
-  
-  // Función para ce1rrar el modal
   const closeModal = () => {
     onClose();
   };
 
-  // Función para agregar una nueva URL
   const addUrl = async () => {
     if (newUrl.trim() === "") {
       setAlertMessage("Por favor, ingresa una URL.");
       setIsAlertOpen(true);
-
       return;
     }
-    /* if (!isValidUrl(newUrl)) {
-      setAlertMessage("Por favor, ingresa una URL válida.");
-      setIsAlertOpen(true);
-      return;
-    } */
 
     if (isReel) {
       try {
-        // Guardar la URL en Firestore
-        await addDocumentFirebase("url-reel", { url: newUrl });  //  ------------>  añadimos las url a firebase 
-        setReels([...reels, newUrl]); // Agregar a la lista de reels
-        setNewUrl(""); // Limpiar el campo de entrada
+        const newReel = { url: newUrl, idFirestore: Date.now().toString() }; // Mock ID for new reel
+        await addDocumentFirebase("url-reel", newReel);
+        setReels([...reels, newReel]); // Add new reel with ID
+        setNewUrl("");
       } catch (error) {
         setAlertMessage("Error al guardar la URL en Firestore.");
         setIsAlertOpen(true);
         console.error("Error al guardar en Firestore:", error);
       }
     } else {
-      await addDocumentFirebase("url-slider", { url: newUrl });  //  ------------>  añadimos las url a firebase 
-      setSliderImages([...sliderImages, newUrl]); // Agregar a la lista de imágenes
-      setNewUrl(""); // Limpiar el campo de entrada
+      try {
+        const newImage = { url: newUrl, idFirestore: Date.now().toString() }; // Mock ID for new image
+        await addDocumentFirebase("url-slider", newImage);
+        setSliderImages([...sliderImages, newImage]); // Add new image with ID
+        setNewUrl("");
+      } catch (error) {
+        setAlertMessage("Error al guardar la URL en Firestore.");
+        setIsAlertOpen(true);
+        console.error("Error al guardar en Firestore:", error);
+      }
     }
   };
 
-  // Función para eliminar una URL
   const removeUrl = (index, isReel, idFirestore) => {
-    console.log(isReel,'isReel');
-    
-
+    if (!idFirestore) {
+      console.error("idFirestore is undefined for the item being deleted.");
+      return;
+    }
 
     if (isReel) {
-      deleteDocumentFirebase('url-reel',idFirestore)
-      setReels(reels.filter((_, i) => i !== index)); // Eliminar reel
+      deleteDocumentFirebase("url-reel", idFirestore);
+      setReels(reels.filter((_, i) => i !== index));
     } else {
-      deleteDocumentFirebase('url-slider',idFirestore)
-      setSliderImages(sliderImages.filter((_, i) => i !== index)); // Eliminar imagen
+      deleteDocumentFirebase("url-slider", idFirestore);
+      setSliderImages(sliderImages.filter((_, i) => i !== index));
     }
   };
 
   return (
     <>
-      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-        <div className="bg-white rounded-lg shadow-lg w-11/12 md:w-3/4 lg:w-1/2 max-h-[90vh] overflow-y-auto p-6">
-          {/* Encabezado del modal */}
+      <motion.div
+        className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
+        <motion.div
+          className="bg-white rounded-lg shadow-lg w-11/12 md:w-3/4 lg:w-1/2 max-h-[90vh] overflow-y-auto p-6"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.8, opacity: 0 }}
+          transition={{ duration: 0.3 }}
+        >
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold">Gestor de Medios</h1>
             <button
@@ -100,7 +106,6 @@ const MediaManager = ({ onClose }) => {
             </button>
           </div>
 
-          {/* Formulario para agregar URLs */}
           <div className="mb-6">
             <input
               type="text"
@@ -110,12 +115,12 @@ const MediaManager = ({ onClose }) => {
               className="border p-2 rounded mr-2 w-full md:w-auto"
             />
             <select
-              value={isReel ? "image" : "reel"}
-              onChange={(e) => setIsReel(e.target.value === "image")}
+              value={isReel ? "reel" : "image"} // Corrected value logic
+              onChange={(e) => setIsReel(e.target.value === "reel")} // Corrected onChange logic
               className="border p-2 rounded mr-2 mt-2 md:mt-0"
             >
-              <option value="image">Imagen del Slider</option>
               <option value="reel">Reel</option>
+              <option value="image">Imagen del Slider</option>
             </select>
             <button
               onClick={addUrl}
@@ -126,20 +131,27 @@ const MediaManager = ({ onClose }) => {
           </div>
 
           <div>
-            <h2 className="text-xl font-semibold mb-2">Imágenes del Slider <SvgImg/> </h2>
-          {/* Lista de Imágenes del Slider */}
+            <h2 className="text-xl font-semibold mb-2">
+              Imágenes del Slider <SvgImg />
+            </h2>
             {sliderImages.length === 0 ? (
               <p className="text-gray-500">No hay imágenes agregadas.</p>
             ) : (
               <ul className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {sliderImages.map((image, index) => (
-                  <li key={index} className="relative">
+                  <motion.li
+                    key={index}
+                    className="relative"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    transition={{ duration: 0.2 }}
+                  >
                     <img
-                      src={ image.url}
+                      src={image.url}
                       alt={`Slider ${index + 1}`}
                       className="w-full h-24 object-cover rounded"
                     />
-                    {console.log(image.idFirestore,'ss')}
                     <button
                       onClick={() => removeUrl(index, false, image.idFirestore)}
                       className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full hover:bg-red-600"
@@ -159,23 +171,31 @@ const MediaManager = ({ onClose }) => {
                         />
                       </svg>
                     </button>
-                  </li>
+                  </motion.li>
                 ))}
               </ul>
             )}
           </div>
 
-          {/* Lista de Reels */}
           <div className="mb-6">
-            <h2 className="text-xl font-semibold mb-2">Reels de Instagram <SvgInstagram/> </h2>
+            <h2 className="text-xl font-semibold mb-2">
+              Reels de Instagram <SvgInstagram />
+            </h2>
             {reels.length === 0 ? (
               <p className="text-gray-500">No hay reels agregados.</p>
             ) : (
               <ul>
                 {reels.map((reel, index) => (
-                  <li key={index} className="mb-2 flex items-center">
+                  <motion.li
+                    key={index}
+                    className="mb-2 flex items-center"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -10 }}
+                    transition={{ duration: 0.2 }}
+                  >
                     <a
-                      href={reel}
+                      href={reel.url}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-500 hover:underline"
@@ -183,23 +203,33 @@ const MediaManager = ({ onClose }) => {
                       Reel {index + 1}
                     </a>
                     <button
-                      onClick={() => removeUrl(index, true)}
+                      onClick={() => removeUrl(index, true, reel.idFirestore)}
                       className="ml-2 text-red-500 hover:text-red-700"
                     >
                       Eliminar
                     </button>
-                  </li>
+                  </motion.li>
                 ))}
               </ul>
             )}
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
-      {/* Alerta para URL inválida o errores */}
       {isAlertOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-11/12 md:w-1/2 lg:w-1/3">
+        <motion.div
+          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <motion.div
+            className="bg-white rounded-lg shadow-lg p-6 w-11/12 md:w-1/2 lg:w-1/3"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.8, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
             <div className="text-center text-red-700 mb-4">
               <p>{alertMessage}</p>
             </div>
@@ -211,8 +241,8 @@ const MediaManager = ({ onClose }) => {
                 Cerrar
               </button>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       )}
     </>
   );

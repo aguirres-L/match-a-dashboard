@@ -172,7 +172,7 @@ const filteredNannies = nannies.filter(nanny => {
       unsubscribeMothers();
       setIsInitialLoad(true);
     }
-  }, [reloadData, refesh]); // Escucha cambios en `reloadData`
+  }, [reloadData, refesh, allFader?.length, isInitialLoad, nannies?.length]); // Added missing dependencies
 
   // Usar esta función para disparar la recarga de datos
   function reload() {
@@ -307,8 +307,6 @@ const filteredNannies = nannies.filter(nanny => {
   }
   
   
-  console.log(nannies,'niñeras');
-
   return (
     <div/*  style={{border:"solid 2px red"}} */ className="flex  flex-col items-center bg-gray-100 min-h-screen p-6">
 <div className="flex flex-row items-center mb-4 space-x-4">
@@ -457,10 +455,10 @@ const filteredNannies = nannies.filter(nanny => {
         }
       >
         <div 
-          onClick={()=> console.log(nanny,'nanyy')}
+        //  onClick={()=> console.log(nanny,'nanyy')}
           className="flex flex-row justify-between"
         >
-          <p className="font-bold">{nanny.name}</p>
+          <p className="font-bold">{nanny.name} - Edad {nanny.age} </p>
           <p
             className={`text-xs font-bold ${
               nanny.state ? "text-green-500" : "text-red-500"
@@ -479,8 +477,9 @@ const filteredNannies = nannies.filter(nanny => {
 
 
         </div>
-        <p className="text-sm">{nanny.address}</p>
-        <p className="text-sm">{nanny.neighborhood}</p>
+        <p className="text-sm">Direeción: {nanny.address}</p>
+        <p className="text-sm">Barrio: {nanny.neighborhood}</p>
+        <p className="text-sm">Mobilidad: {nanny.mobility}</p>
       </li>
     ))}
   </ul>

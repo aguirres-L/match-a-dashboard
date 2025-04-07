@@ -172,7 +172,7 @@ const filteredNannies = nannies.filter(nanny => {
       unsubscribeMothers();
       setIsInitialLoad(true);
     }
-  }, [reloadData, refesh, allFader?.length, isInitialLoad, nannies?.length]); // Added missing dependencies
+  }, [reloadData, refesh, allFader?.length,  nannies?.length]); // Added missing dependencies
 
   // Usar esta función para disparar la recarga de datos
   function reload() {
@@ -431,8 +431,8 @@ const filteredNannies = nannies.filter(nanny => {
     )}
   </div>
 
-  {/* Lista de Niñeras con Scroll */}
-  <ul className="space-y-2 max-h-[300px] overflow-y-auto pr-2">
+  {/* Lista de Niñeras con Scroll -- colocar medida de altura ? */}
+  <ul className="space-y-2  overflow-y-auto pr-2">
     {filteredNannies.map((nanny) => (
       <li
         key={nanny.idFirestore}
@@ -509,7 +509,8 @@ const filteredNannies = nannies.filter(nanny => {
 
           </div>
 
-          <ul className="space-y-2 z-0 max-h-[300px] overflow-y-auto">
+{/* -- colocar medida de altura ? ?? */}
+          <ul className="space-y-2 z-0   overflow-y-auto">
             {mothers.map((mother) => (
               <li
                 key={mother.idFirestore}
@@ -519,6 +520,7 @@ const filteredNannies = nannies.filter(nanny => {
                 draggable
                 onDragStart={(event) => onDragStart(event, mother, "mother")}
               >
+              {console.log(mother,'mother')}
                 <p className="font-semibold text-lg text-gray-800 truncate">
                   {mother.name}
                 </p>
@@ -530,9 +532,10 @@ const filteredNannies = nannies.filter(nanny => {
                 </p>
                 <p className="text-sm text-gray-600">
                   <span className="font-medium ">Horario:</span>{" "}
-                  {mother.services[0]?.schedule || "No especificado"}
+                  {mother.services[0]?.schedule  || "No especificado"} - { mother.services[0]?.timeRange  || "No especificado"}  
                   {/*     {console.log(mother.services[0]?.schedule,'tipo ')} */}
                 </p>
+
                 <p className="text-sm text-gray-600">
                   <span className="font-medium">Servicio:</span>{" "}
                   {mother.services[0]?.plan || "No especificado"}
